@@ -23,3 +23,7 @@ function &dbmole_connection($dbmole){
 // Creating testing structures
 $GLOBALS["dbmole"] = PgMole::GetInstance();
 $GLOBALS["dbmole"]->doQuery(file_get_contents(__DIR__."/structures.postgresql.sql"));
+
+// === Creating testing table in mysql
+$my = MysqlMole::GetInstance();
+$script = file_get_contents(__DIR__."/structures.mysql.sql");
