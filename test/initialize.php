@@ -27,3 +27,4 @@ $GLOBALS["dbmole"]->doQuery(file_get_contents(__DIR__."/structures.postgresql.sq
 // === Creating testing table in mysql
 $my = MysqlMole::GetInstance();
 $script = file_get_contents(__DIR__."/structures.mysql.sql");
+$my->doQuery($script);
