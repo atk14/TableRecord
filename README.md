@@ -3,7 +3,6 @@ TableRecord
 
 TableRecord provides basic functionality with table records.
 
-
 Installation
 ------------
 
