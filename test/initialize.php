@@ -27,4 +27,9 @@ $GLOBALS["dbmole"]->doQuery(file_get_contents(__DIR__."/structures.postgresql.sq
 // === Creating testing table in mysql
 $my = MysqlMole::GetInstance();
 $script = file_get_contents(__DIR__."/structures.mysql.sql");
-$my->doQuery($script);
+// dropping table
+preg_match('/\n(DROP TABLE.*?);/s',$script,$matches);
+$my->doQuery($matches[1]);
+// creating table
+preg_match('/\n(CREATE TABLE.*?);/s',$script,$matches);
+$my->doQuery($matches[1]);
