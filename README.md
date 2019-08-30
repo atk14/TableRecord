@@ -26,7 +26,7 @@ Run tests:
 License
 -------
 
-DbMole is free software distributed [under the terms of the MIT license](http://www.opensource.org/licenses/mit-license)
+TableRecord is free software distributed [under the terms of the MIT license](http://www.opensource.org/licenses/mit-license)
 
 [//]: # ( vim: set ts=2 et: )
 
