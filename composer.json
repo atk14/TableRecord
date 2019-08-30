@@ -1,0 +1,27 @@
+{
+    "name": "atk14/table_record",
+    "description": "Base class for manipulating database records for Atk14 framework.",
+		"keywords": ["atk14","database","record"],
+    "type": "library",
+    "homepage": "https://github.com/atk14/TableRecord",
+    "license": "MIT",
+    "require": {
+			"atk14/dbmole": "1.*",
+			"atk14/string4": "0.*",
+			"atk14/functions": "*"
+		},
+		"require-dev": {
+			"atk14/tester": "*",
+			"phpunit/phpunit": "4.8.*"
+		},
+		"autoload": {
+			"classmap": ["src"],
+			"files": [
+				"src/tablerecord_databaseccessor_postgresql.php",
+				"src/tablerecord_databaseccessor_mysql.php"
+			]
+		},
+		"autoload-dev": {
+			"classmap": ["src","test/models","test"]
+		}
+}
