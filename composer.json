@@ -1,5 +1,5 @@
 {
-    "name": "atk14/table_record",
+    "name": "atk14/table-record",
     "description": "Base class for manipulating database records for Atk14 framework.",
 		"keywords": ["atk14","database","record"],
     "type": "library",
