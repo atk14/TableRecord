@@ -3,6 +3,10 @@ Change Log
 
 All notable changes to TableRecord will be documented in this file.
 
+## [1.1.2] - 2021-03-15
+
+- composer.json fixed
+
 ## [1.1.1] - 2021-03-15
 
 - Added proper column names escaping for MySQL
