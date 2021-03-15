@@ -6,7 +6,7 @@
     "homepage": "https://github.com/atk14/TableRecord",
     "license": "MIT",
     "require": {
-			"atk14/dbmole": "1.*",
+			"atk14/dbmole": "1.* >=1.1.2",
 			"atk14/string4": "0.*",
 			"atk14/functions": "*"
 		},
