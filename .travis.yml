@@ -23,10 +23,13 @@ services:
 
 before_script:
   - composer update --dev
-  - mysql -e "CREATE DATABASE test CHARACTER SET 'UTF8';"
-  - mysql -e "CREATE USER 'test'@'localhost' IDENTIFIED BY 'test'; GRANT ALL ON *.* TO 'test'@'localhost'";
-  - psql -c "CREATE DATABASE test;" -U postgres
-  - psql -c "CREATE USER test WITH ENCRYPTED PASSWORD 'test'; GRANT ALL PRIVILEGES ON DATABASE test TO test;" -U postgres
+  - sudo mysql -u root -e "USE mysql; UPDATE user SET Grant_priv='Y' WHERE User='root';" # What? root does not have Grant privilege?
+  - sudo mysql -u root -e "FLUSH PRIVILEGES;"
+  - sudo mysql -u root -e "CREATE DATABASE test CHARACTER SET 'UTF8';"
+  - sudo mysql -u root -e "CREATE USER 'test'@'localhost' IDENTIFIED BY 'test'; GRANT ALL ON *.* TO 'test'@'localhost'";
+  - sudo mysql -u root -e "FLUSH PRIVILEGES;"
+  - sudo -u postgres psql -c "CREATE DATABASE test;" -U postgres
+  - sudo -u postgres psql -c "CREATE USER test WITH ENCRYPTED PASSWORD 'test'; GRANT ALL PRIVILEGES ON DATABASE test TO test;" -U postgres
 
 script:
   - cd test && ../vendor/bin/run_unit_tests
