@@ -92,7 +92,7 @@ class TableRecord extends inobj {
 	 * @var string
 	 * @access private
 	 */
-	protected $_IdFieldType = "integer";
+	protected $_IdFieldType = null; // "integer" or "string"
 
 	/**
 	 * Columns which values shouldn't be read in during instantiation of object.
@@ -163,13 +163,7 @@ class TableRecord extends inobj {
 		$this->_SequenceName = $options["sequence_name"];
 		self::$_DoNotReadValues = $options["do_not_read_values"];
 
-		$structure = $this->_getTableStructure();
-
 		$this->_IdFieldName = $options["id_field_name"];
-		if(is_null($options["id_field_type"])){
-			// autodetection
-			$options["id_field_type"] = preg_match('/char/i',$structure[$this->_IdFieldName]) ? "string" : "integer";
-		}
 		$this->_IdFieldType = $options["id_field_type"];
 
 		if(!isset($DEFAULT_OPTIONS[$class_name])){
@@ -528,7 +522,7 @@ class TableRecord extends inobj {
 			return Cache::Get(get_class($this),$id);
 		}
 
-		settype($id,$this->_IdFieldType);
+		settype($id,$this->_getIdFieldType());
 		$this->_Id = $id;
 		if(!$this->_readValues()){
 			return null;
@@ -1034,7 +1028,7 @@ class TableRecord extends inobj {
 		foreach($ids as $_key => $id){
 			if(is_object($id)){ $id = $id->getId(); }
 			if(!isset($id)){ continue; } // v poli se muze klidne nachazet nejaky null
-			settype($id,$this->_IdFieldType);
+			settype($id,$this->_getIdFieldType());
 			$bind_ar[":id$i"] = $id;
 			$i++;
 		}
@@ -1614,6 +1608,15 @@ class TableRecord extends inobj {
 	function _readTableStructure($options = array()){
 		$accessor_class = "TableRecord_DatabaseAccessor_".$this->dbmole->getDatabaseType();
 		return $accessor_class::ReadTableStructure($this,$options);
+	}
+
+	protected function _getIdFieldType(){
+		if(is_null($this->_IdFieldType)){
+			// autodetection
+			$structure = $this->_getTableStructure();
+			$this->_IdFieldType = preg_match('/char/i',$structure[$this->_IdFieldName]) ? "string" : "integer";
+		}
+		return $this->_IdFieldType;
 	}
 
 	/**
