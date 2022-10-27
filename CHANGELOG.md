@@ -3,6 +3,10 @@ Change Log
 
 All notable changes to TableRecord will be documented in this file.
 
+## [1.1.3] - 2022-10-27
+
+* 6003067 - Added autodetection of primary key field type
+
 ## [1.1.2] - 2021-03-15
 
 - composer.json fixed
