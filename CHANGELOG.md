@@ -3,6 +3,10 @@ Change Log
 
 All notable changes to TableRecord will be documented in this file.
 
+## [1.2.0] - 2022-10-27
+
+* 78770de - PHP8.1 compatibility, TableRecord is no more compatible with PHP 5 and PHP 7.0
+
 ## [1.1.3] - 2022-10-27
 
 * 6003067 - Added autodetection of primary key field type
