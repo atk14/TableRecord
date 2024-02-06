@@ -42,6 +42,12 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 
 	protected $iterator_offset = 0;
 
+	var $_owner;
+
+	var $_dbmole;
+
+	var $_options;
+
 	/**
 	 * Constructor
 	 *
@@ -669,6 +675,13 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
  * Here is a item from a lister.
  */
 class TableRecord_ListerItem{
+
+	protected $_lister;
+	protected $_options;
+	protected $_row_data;
+	protected $_owner;
+	protected $_dbmole;
+	protected $_rank;
 
 	/**
 	 * This constructor is only used internally in {@link TableRecord_Lister TableRecord_Lister} and is not needed to use in an application.
