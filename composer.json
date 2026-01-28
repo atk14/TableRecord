@@ -12,8 +12,7 @@
 			"atk14/functions": "*"
 		},
 		"require-dev": {
-			"atk14/tester": "*",
-			"phpunit/phpunit": "4.8.*"
+			"atk14/tester": "*"
 		},
 		"autoload": {
 			"classmap": ["src"],
