@@ -35,6 +35,18 @@
 class TableRecord_Finder implements ArrayAccess, Iterator, Countable {
 
 	protected $associative = null;
+	protected $_Query;
+	protected $_QueryCount;
+	protected $_BindAr;
+	protected $_QueryOptions;
+	protected $_ClassName;
+	protected $_UseCache;
+	protected $_dbmole;
+	protected $_Records;
+	protected $_RecordsCount;
+	protected $_RecordIds;
+	protected $_RecordKey;
+	protected $_RecordData;
 
 	/**
 	 * Constructor
@@ -217,6 +229,14 @@ class TableRecord_Finder implements ArrayAccess, Iterator, Countable {
 	}
 
 	/**
+	 * In the future, the limit could be higher than page size - i.e. the result can shows more pages
+	 *
+	 */
+	function getPageSize(){
+		return $this->getLimit();
+	}
+
+	/**
 	 * Getter for offset option.
 	 *
 	 * @return integer
@@ -261,7 +281,7 @@ class TableRecord_Finder implements ArrayAccess, Iterator, Countable {
 	#[\ReturnTypeWillChange]
 	function offsetGet($value){
 		$x=$this->getRecords();
-		return $x[$value];
+		return(isset($x[$value])) ? $x[$value] : null;
 	}
 
 	function offsetSet($value, $name):void {

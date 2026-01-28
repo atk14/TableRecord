@@ -113,6 +113,11 @@ class TableRecord extends inobj {
 	protected $_RecordValues = array();
 
 	/**
+	 * @ignore
+	 */
+	protected $_dbmole_wakeup_data_;
+
+	/**
 	 * Constructor
 	 *
 	 * @param mixed $table_name_or_options
@@ -674,7 +679,6 @@ class TableRecord extends inobj {
 			"bind_ar" => $bind_ar,
 			"use_cache" => $use_cache
 		),$this->dbmole);
-		$finder->dbmole = &$this->dbmole;
 
 		// TODO: toto by melo byt v TableRecord_Finder
 		if($use_cache){
@@ -1315,7 +1319,7 @@ class TableRecord extends inobj {
 
 		foreach($values as $_key => $_value){
 			if(in_array($_key,$keys)){
-				$this->_RecordValues[$_key] = $_value;
+				$this->_RecordValues[$_key] = self::ObjToId($_value);
 			}
 		}
 	}
