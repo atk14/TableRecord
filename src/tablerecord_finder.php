@@ -279,25 +279,25 @@ class TableRecord_Finder implements ArrayAccess, Iterator, Countable {
 
 	/*** functions implementing array like access ***/
 	#[\ReturnTypeWillChange]
-	function offsetGet($value){
-		$x=$this->getRecords();
-		return(isset($x[$value])) ? $x[$value] : null;
+	function offsetGet($offset){
+		$records = $this->getRecords();
+		return(isset($records[$offset])) ? $records[$offset] : null;
 	}
 
-	function offsetSet($value, $name):void {
+	function offsetSet($offset, $value):void {
 		$this->getRecords();
-		$this->_Records[$name]=$value;
+		$this->_Records[$offset] = $value;
 	}
 
-	function offsetUnset($value):void {
+	function offsetUnset($offset):void {
 		$this->getRecords();
-		unset($this->_Records[$name]);
+		unset($this->_Records[$offset]);
 	}
 
 	#[\ReturnTypeWillChange]
-	function offsetExists($value):bool {
+	function offsetExists($offset):bool {
 		$this->getRecords();
-		return array_key_exists($name, $this->_Records);
+		return array_key_exists($offset, $this->_Records);
 	}
 
 	/*** functions implementing iterator like access (foreach cycle)***/
