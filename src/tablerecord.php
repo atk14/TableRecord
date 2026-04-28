@@ -1116,8 +1116,8 @@ class TableRecord extends inobj {
 	/**
 	 * Returns array of record values.
 	 *
-	 * Returns all values except record id.
-	 * Passing option return_id=>true forces method to return even column with record id.
+	 * Returns all record values including the id.
+	 * Pass option return_id=>false to exclude the id column.
 	 *
 	 * Example how to simply create a copy of a record:
 	 * ```
