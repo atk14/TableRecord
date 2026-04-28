@@ -27,7 +27,7 @@
  *
  * Get records. Number of records is limited by option limit
  * ```
- * $finder->getRecords(); // pole objektu, max velikost je omezena nastavenim "limit"
+ * $finder->getRecords(); // array of objects, maximum size is limited by the "limit" option
  * ```
  *
  * @package Atk14\TableRecord
