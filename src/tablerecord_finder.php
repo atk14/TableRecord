@@ -176,10 +176,13 @@ class TableRecord_Finder implements ArrayAccess, Iterator, Countable {
 	function getRecordsCount(){
 		if(!isset($this->_RecordsCount)){
 			$options = $this->_QueryOptions;
+			$offset = isset($options["offset"]) ? $options["offset"] : 0;
+			$limit = isset($options["limit"]) ? $options["limit"] : null;
+
 			if(
 				isset($this->_Records) &&
-				$options["offset"] == 0 &&
-				(count($this->_Records) < $options["limit"] || !$options["limit"])
+				$offset == 0 &&
+				(count($this->_Records) < $limit || !$limit)
 			){
 				return $this->_RecordsCount = count($this->_Records);
 			}
@@ -313,9 +316,9 @@ class TableRecord_Finder implements ArrayAccess, Iterator, Countable {
 	public function next():void {
 		next($this->_Records);
 	}
-  public function rewind():void {
-   $this->getRecords();
-	 reset($this->_Records);
+	public function rewind():void {
+		$this->getRecords();
+		reset($this->_Records);
 	}
 	public function valid():bool {
 		return isset($this->_Records) && current($this->_Records);
