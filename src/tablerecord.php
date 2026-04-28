@@ -293,9 +293,12 @@ class TableRecord extends inobj {
 		 @return DbMole
 	 */
 	static function &GetDbmole(){
+		static $instances = [];
 		$class = get_called_class();
-		$o = new $class();
-		return $o->dbmole;
+		if(!isset($instances[$class])){
+			$instances[$class] = new $class();
+		}
+		return $instances[$class]->dbmole;
 	}
 
 	/**
