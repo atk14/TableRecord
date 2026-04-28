@@ -66,7 +66,7 @@ class TableRecord extends inobj {
 	 * @access private
 	 * @var string
 	 */
-	var $_SequenceName = "";
+	protected $_SequenceName = "";
 
 	/**
 	 * Id of the record
