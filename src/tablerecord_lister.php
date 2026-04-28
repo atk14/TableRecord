@@ -80,7 +80,7 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 	 *
 	 * @todo comment options
 	 */
-	function __construct($owner,$subjects,$options = array()){
+	function __construct(TableRecord $owner, string $subjects, array $options = []) {
 		$owner_class = new String4(get_class($owner));
 		$owner_class_us = $owner_class->underscore();
 		$subjects = new String4($subjects);
@@ -106,15 +106,15 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 		$this->_options = $options;
 	}
 
-	function getOwner(){
+	function getOwner(): TableRecord {
 		return $this->_owner;
 	}
 
-	function getDbmole(){
+	function getDbmole(): DbMole {
 		return $this->_dbmole;
 	}
 
-	function getOptions(){
+	function getOptions(): array {
 		return $this->_options;
 	}
 
@@ -143,7 +143,7 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 	 * $authors3 = $article3->getLister("Authors")->getRecords();
 	 * ```
 	 */
-	function prefetchDataFor($owners,$options = array()){
+	function prefetchDataFor($owners, array $options = []): void {
 		$options += array(
 			"force_read" => false,
 		);
@@ -178,7 +178,7 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 	 * $records2 = $lister->getRecords();
 	 * ```
 	 */
-	function flushCache(){
+	function flushCache(): void {
 		$this->prefetchDataFor($this->_owner,array("force_read" => true));
 	}
 
@@ -187,7 +187,7 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 	 *
 	 * @param TableRecord $record
 	 */
-	function append($record){
+	function append($record): void {
 		$o = $this->_options;
 		$this->_add($record);
 	}
@@ -197,28 +197,28 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 	 *
 	 * @param TableRecord $record
 	 */
-	function add($record){ return $this->append($record); }
+	function add($record): void { $this->append($record); }
 
 	/**
 	 * Prepends a record at the beginning of the list.
 	 *
 	 * @param TableRecord $record
 	 */
-	function prepend($record){ $this->_add($record,-1); }
+	function prepend($record): void { $this->_add($record,-1); }
 
 	/**
 	 * Alias for TableRecord_Lister::prepend()
 	 *
 	 * @param TableRecord $record
 	 */
-	function unshift($record){ return $this->prepend($record); }
+	function unshift($record): void { $this->prepend($record); }
 
 	/**
 	 * Shift an record off the beginning of the list.
 	 *
 	 * @return TableRecord $record
 	 */
-	function shift(){
+	function shift(): ?TableRecord {
 		$items = $this->getItems();
 		if(isset($items[0])){
 			$record = $items[0]->getRecord();
@@ -233,7 +233,7 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 	 * @param TableRecord $record
 	 * @param integer $rank
 	 */
-	protected function _add($record,$rank = null){
+	protected function _add($record, $rank = null): void {
 		$o = $this->_options;
 
 		if(is_null($rank)){
@@ -265,7 +265,7 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 	 *
 	 * @param TableRecord $record
 	 */
-	function remove($record){
+	function remove($record): void {
 		$o = $this->_options;
 		$this->_dbmole->doQuery("DELETE FROM $o[table_name] WHERE
 			$o[owner_field_name]=:owner AND
@@ -279,7 +279,7 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 	 *
 	 * It does not destroy the associated records, only the links from association table.
 	 */
-	function clear(){
+	function clear(): void {
 		$o = $this->_options;
 		$this->_dbmole->doQuery("DELETE FROM $o[table_name] WHERE
 			$o[owner_field_name]=:owner
@@ -293,7 +293,7 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 	 * @param TableRecord $record
 	 * @return bool
 	 */
-	function contains($record){
+	function contains($record): bool {
 		if(is_object($record)){ $record = $record->getId(); }
 		foreach($this->getItems() as $item){
 			if($item->getRecordId()==$record){ return true; }
@@ -306,14 +306,14 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 	 *
 	 * @return int
 	 */
-	function size(){ return sizeof($this->getItems()); }
+	function size(): int { return sizeof($this->getItems()); }
 
 	/**
 	 * Checks if lister contains items.
 	 *
 	 * @return bool
 	 */
-	function isEmpty(){ return $this->size()==0; }
+	function isEmpty(): bool { return $this->size()==0; }
 
 	/**
 	 * Returns items from association table.
@@ -325,7 +325,7 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 	 * - force_read `true` clears cache and reads dall records in a fresh state [default: false]
 	 * @return TableRecord_ListerItem[]
 	 */
-	function &getItems($options = array()){
+	function &getItems(array $options = []): array {
 		$options += array(
 			"force_read" => false,
 			"preread_data" => true,
@@ -385,7 +385,7 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 	 *
 	 * @return integer[]
 	 */
-	function getIds($options = array()){
+	function getIds(array $options = []): array {
 		$out = array();
 		foreach($this->getItems($options) as $item){ $out[] = $item->getId(); }
 		return $out;
@@ -401,7 +401,7 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 	 *
 	 * @return integer[]
 	 */
-	function getRecordIds($options = array()){
+	function getRecordIds(array $options = []): array {
 		$out = array();
 		foreach($this->getItems($options) as $item){ $out[] = $item->getRecordId(); }
 		return $out;
@@ -412,7 +412,7 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 	 *
 	 * @return string
 	 */
-	function getClassNameOfRecords(){
+	function getClassNameOfRecords(): string {
 		return $this->_options["class_name"];
 	}
 
@@ -430,7 +430,7 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 	 * - force_read {@link getItems}
 	 * @return TableRecord[]
 	 */
-	function getRecords($options = array()){
+	function getRecords(array $options = []): array {
 		$ids = array();
 		foreach($this->getItems($options) as $item){ $ids[] = $item->getRecordId(); }
 		return Cache::Get($this->getClassNameOfRecords(), $ids); // TODO: usage of the Cache should be set by an option
@@ -451,7 +451,7 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 	 *
 	 * @param TableRecord[] $records
 	 */
-	function setRecords($records){
+	function setRecords(array $records): void {
 
 		$records = array_map(
 			function($v) { return is_object($v)?$v->getId():$v; },
@@ -492,7 +492,7 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 	 * @param TableRecord $record
 	 * @return int
 	 */
-	function getRecordRank($record){
+	function getRecordRank($record): ?int {
 		$record = TableRecord::ObjToId($record);
 		$rank = 0;
 		foreach($this->getItems() as $item){
@@ -512,7 +512,7 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 	 * @param TableRecord $record
 	 * @param integer $rank
 	 */
-	function setRecordRank($record,$rank){
+	function setRecordRank($record, int $rank): void {
 		$record = TableRecord::ObjToId($record);
 		foreach($this->getItems() as $item){
 			if($item->getRecordId()==$record){
@@ -532,7 +532,7 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 	 * @todo make it protected
 	 * @param TableRecord|null $owner
 	 */
-	function _correctRanking($owner = null){
+	function _correctRanking($owner = null): void {
 		if(!isset($owner)){ $owner = $this->_owner; }
 
 		$o = $this->_options;
@@ -562,11 +562,11 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 		return $this->_owner->getId();
 	}
 
-	protected function _getOwnerClass(){
+	protected function _getOwnerClass(): string {
 		return get_class($this->_owner);
 	}
 
-	function _clearCache($owner = null){
+	function _clearCache($owner = null): void {
 		if(!isset($owner)){ $owner = $this->_owner; }
 		$owner_id = TableRecord::ObjToId($owner);
 
@@ -576,7 +576,7 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 		}
 	}
 
-	protected function _getCacheKey(){
+	protected function _getCacheKey(): string {
 		$options = $this->_options;
 		return serialize($options);
 	}
@@ -678,7 +678,7 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 	/**
 	 * Cleares whole cache
 	 */
-	static function ClearCache() {
+	static function ClearCache(): void {
 		self::$CACHE = array();
 	}
 }
@@ -702,7 +702,7 @@ class TableRecord_ListerItem{
 	 * @param array $row_data
 	 * @access private
 	 */
-	function __construct(&$lister,$row_data,$rank){
+	function __construct(TableRecord_Lister &$lister, array $row_data, int $rank) {
 		$this->_lister = &$lister;
 		$this->_options = $lister->getOptions();
 		$this->_row_data = $row_data;
@@ -716,7 +716,7 @@ class TableRecord_ListerItem{
 	 *
 	 * @return integer
 	 */
-	function getRank(){
+	function getRank(): int {
 		return $this->_rank;
 	}
 
@@ -725,7 +725,7 @@ class TableRecord_ListerItem{
 	 *
 	 * It's useful for testing purposes
 	 */
-	function _getSavedRank(){
+	function _getSavedRank(): int {
 		return (int)$this->_g("rank");
 	}
 
@@ -734,7 +734,7 @@ class TableRecord_ListerItem{
 	 *
 	 * @return integer
 	 */
-	function getId(){
+	function getId(): int {
 		return (int)$this->_g("id");
 	}
 
@@ -745,7 +745,7 @@ class TableRecord_ListerItem{
 	 *
 	 * @param integer $rank
 	 */
-	function setRank($rank){
+	function setRank(int $rank): void {
 		$rank = (integer)$rank;
 		$o = $this->_options;
 
@@ -796,7 +796,7 @@ class TableRecord_ListerItem{
 	 *
 	 * @param $record TableRecord
 	 */
-	function setRecordId($record){
+	function setRecordId($record): void {
 		$o = $this->_options;
 		$this->_dbmole->doQuery("UPDATE $o[table_name] SET $o[subject_field_name]=:record WHERE $o[id_field_name]=:id",array(
 			":record" => $record,
@@ -809,21 +809,21 @@ class TableRecord_ListerItem{
 	 *
 	 * @return TableRecord
 	 */
-	function getRecord(){
+	function getRecord(): ?TableRecord {
 		return Cache::Get($this->_options["class_name"],$this->getRecordId());
 	}
 
 	/**
 	 * Destroys item with associated record.
 	 */
-	function destroy(){
+	function destroy(): void {
 		$o = $this->_options;
 		$this->_dbmole->doQuery("DELETE FROM $o[table_name] WHERE $o[id_field_name]=:id",array(
 			":id" => $this,
 		));
 	}
 
-	function toArray(){
+	function toArray(): array {
 		$out = [];
 		$out += [
 			"table_name" => $this->_options["table_name"],
@@ -841,7 +841,7 @@ class TableRecord_ListerItem{
 	 *
 	 * @param string $key
 	 */
-	function _g($key){
+	function _g(string $key) {
 		return $this->_row_data[$key];
 	}
 
@@ -851,7 +851,7 @@ class TableRecord_ListerItem{
 	 * @param string $key
 	 * @param mixed $value
 	 */
-	function _s($key,$value){
+	function _s(string $key, $value): void {
 		$this->_row_data[$key] = $value;
 	}
 }

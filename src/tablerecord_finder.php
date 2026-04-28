@@ -62,7 +62,7 @@ class TableRecord_Finder implements ArrayAccess, Iterator, Countable {
 	 * @param DbMole $dbmole
 	 *
 	 */
-	function __construct($options,&$dbmole){
+	function __construct(array $options, &$dbmole) {
 		$options += array(
 			"query" => null,
 			"query_count" => null,
@@ -90,7 +90,7 @@ class TableRecord_Finder implements ArrayAccess, Iterator, Countable {
 	 *
 	 * @return array array of records
 	 */
-	function getRecords(){
+	function getRecords(): array {
 		if(!isset($this->_Records)){
 			if($this->_UseCache){
 				$this->_Records = Cache::Get($this->_ClassName,$this->getRecordIds());
@@ -106,7 +106,7 @@ class TableRecord_Finder implements ArrayAccess, Iterator, Countable {
 	 *
 	 * @return array array of found ids
 	 */
-	function getRecordIds() {
+	function getRecordIds(): array {
 		if(!isset($this->_RecordIds)){
 			$this->_RecordData = $this->_dbmole->selectRows($this->_Query,$this->_BindAr,$this->_QueryOptions);
 			if( $this->_RecordData ) {
@@ -164,7 +164,7 @@ class TableRecord_Finder implements ArrayAccess, Iterator, Countable {
 	 * Returns records count in the current result window specified by limit and offset.
 	 * 
 	 */
-	function getRecordsDisplayed(){
+	function getRecordsDisplayed(): int {
 		return sizeof($this->getRecords());
 	}
 
@@ -173,7 +173,7 @@ class TableRecord_Finder implements ArrayAccess, Iterator, Countable {
 	 *
 	 * @return integer
 	 */
-	function getRecordsCount(){
+	function getRecordsCount(): int {
 		if(!isset($this->_RecordsCount)){
 			$options = $this->_QueryOptions;
 			$offset = isset($options["offset"]) ? $options["offset"] : 0;
@@ -202,7 +202,7 @@ class TableRecord_Finder implements ArrayAccess, Iterator, Countable {
 	 * @return integer
 	 * @uses getRecordsCount()
 	 */
-	function getTotalAmount(){
+	function getTotalAmount(): int {
 		return $this->getRecordsCount();
 	}
 
@@ -211,7 +211,7 @@ class TableRecord_Finder implements ArrayAccess, Iterator, Countable {
 	 *
 	 * @return bool true when no records were found otherwise false
 	 */
-	function isEmpty(){ return $this->getTotalAmount()==0; }
+	function isEmpty(): bool { return $this->getTotalAmount()==0; }
 
 	/**
 	 * Checks if the returned recordset was not empty.
@@ -220,14 +220,14 @@ class TableRecord_Finder implements ArrayAccess, Iterator, Countable {
 	 *
 	 * @return bool false when no records were found otherwise true
 	 */
-	function notEmpty(){ return !$this->isEmpty(); }
+	function notEmpty(): bool { return !$this->isEmpty(); }
 
 	/**
 	 * Getter for limit option
 	 *
 	 * @return integer
 	 */
-	function getLimit(){
+	function getLimit(): ?int {
 		return $this->_QueryOptions["limit"];
 	}
 
@@ -235,7 +235,7 @@ class TableRecord_Finder implements ArrayAccess, Iterator, Countable {
 	 * In the future, the limit could be higher than page size - i.e. the result can shows more pages
 	 *
 	 */
-	function getPageSize(){
+	function getPageSize(): ?int {
 		return $this->getLimit();
 	}
 
@@ -244,7 +244,7 @@ class TableRecord_Finder implements ArrayAccess, Iterator, Countable {
 	 *
 	 * @return integer
 	 */
-	function getOffset(){
+	function getOffset(): ?int {
 		return $this->_QueryOptions["offset"];
 	}
 
@@ -253,7 +253,7 @@ class TableRecord_Finder implements ArrayAccess, Iterator, Countable {
 	 *	// display prev records link
 	 * }
 	 */
-	function atBeginning(){
+	function atBeginning(): bool {
 		return $this->getOffset()<=0;
 	}
 
@@ -262,7 +262,7 @@ class TableRecord_Finder implements ArrayAccess, Iterator, Countable {
 	 *	echo "there are no more records";
 	 * }
 	 */
-	function atEnd(){
+	function atEnd(): bool {
 		if($this->getRecordsCount()==0){ return true; }
 		return ($this->getOffset() + $this->getRecordsDisplayed())>=$this->getTotalAmount();
 	}
@@ -270,12 +270,12 @@ class TableRecord_Finder implements ArrayAccess, Iterator, Countable {
 	/**
 	 * 
 	 */
-	function getNextOffset(){
+	function getNextOffset(): ?int {
 		$next_offset = $this->getOffset() + $this->getLimit();
 		return $next_offset>($this->getTotalAmount()-1) ? null : $next_offset;
 	}
 
-	function getPrevOffset(){
+	function getPrevOffset(): ?int {
 		$prev_offset = $this->getOffset() - $this->getLimit();
 		return $prev_offset<=0 ? null : $prev_offset;
 	}
@@ -325,7 +325,7 @@ class TableRecord_Finder implements ArrayAccess, Iterator, Countable {
 	}
 
 	#[\ReturnTypeWillChange]
-	public function count(){
+	public function count(): int {
 		return $this->getRecordsDisplayed();
 	}
 }

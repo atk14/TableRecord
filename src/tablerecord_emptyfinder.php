@@ -28,10 +28,10 @@ class TableRecord_EmptyFinder extends TableRecord_Finder{
 	/**
 	 * @return integer always returns 0
 	 */
-	function getRecordsCount(){ return 0; }
+	function getRecordsCount(): int { return 0; }
 
 		/**
 		 * @return array always returns empty array
 		 */
-	function getRecords(){ return array(); }
+	function getRecords(): array { return array(); }
 }

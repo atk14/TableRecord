@@ -34,7 +34,7 @@ class ObjectCacher {
 	 *
 	 * @access protected
 	 */
-	function __construct($class) {
+	function __construct(string $class) {
 		$this->class = $class;
 	}
 
@@ -86,7 +86,7 @@ class ObjectCacher {
 	 *
 	 * When first $cacher->get() is called, all previously prepared ids are automatically read to cache
 	 */
-	function prepare($ids) {
+	function prepare($ids): void {
 		$ids = array_filter(self::_ToIds($ids));
 		if(!$ids){ return; } // PHP5.3 workaround
 		$ids = array_diff_key(array_combine($ids, $ids), $this->cache);
@@ -124,7 +124,7 @@ class ObjectCacher {
 	 *	$calls->getCached([123,124],true);
 	 * </code>
 	 */
-	function getCached($ids_or_prepare = null,$prepare = false) {
+	function getCached($ids_or_prepare = null, bool $prepare = false): array {
 		$ids = null;
 		if(is_array($ids_or_prepare)){
 			$ids = $ids_or_prepare;
@@ -148,7 +148,7 @@ class ObjectCacher {
 	/**
 	 * Returns ids of all cached and prepared records
 	 */
-	function cachedIds() {
+	function cachedIds(): array {
 		$out = $this->prepare;
 		if($cached = array_keys($this->cache)){
 			$out += array_combine($cached,$cached);
@@ -159,7 +159,7 @@ class ObjectCacher {
 	/**
 	 * Clears whole cache, or (by id) selected record(s) from cache
 	 */
-	function clear($ids = null) {
+	function clear($ids = null): void {
 		if($ids === null) {
 			$this->cache = array();
 		} else {
@@ -171,7 +171,7 @@ class ObjectCacher {
 	/**
 	 * Is given record in cache?
 	 */
-	function inCache($id) {
+	function inCache($id): bool {
 		if(is_object($id)) {$id = $id->getId();};
 		return key_exists($id, $this->cache);
 	}
@@ -253,7 +253,7 @@ class Cache{
 	 * Returns a object that caches instances of the given class
 	 *
 	 */
-	function &getCacher($class,$create = true) {
+	function &getCacher(string $class, bool $create = true): ?ObjectCacher {
 		$class = (string)$class;
 		return ObjectCacher::GetInstance($class,$create);
 	}
@@ -261,7 +261,7 @@ class Cache{
 	/**
 	 * Get global cache instance
 	 */
-	static function &GetInstance(){
+	static function &GetInstance(): Cache {
 		static $instance;
 		if(!isset($instance)){
 			$instance = new Cache();
@@ -281,7 +281,7 @@ class Cache{
 	 *	// .....
 	 * </code>
 	 */
-	static function &GetObjectCacher($class){
+	static function &GetObjectCacher(string $class): ObjectCacher {
 		return self::GetInstance()->getCacher($class);
 	}
 
@@ -294,7 +294,7 @@ class Cache{
 	 * 	Cache::Prepare("Article",array(125,126));
 	 * </code>
 	 */
-	static function Prepare($class,$ids){
+	static function Prepare(string $class, $ids): void {
 		self::GetInstance()->getCacher($class)->prepare($ids);
 	}
 
@@ -320,12 +320,12 @@ class Cache{
 	 *	Cache::Clear("Article",array(123,124)); // flushes just Article#123 and Article#124, if there are such objects in cache
 	 * </code>
 	 */
-	static function Clear($class = null,$id = null){
+	static function Clear(?string $class = null, $id = null): void {
 		$c = self::GetInstance();
 		$c->clearCache($class, $id);
 	}
 
-	function clearCache($class = null, $ids = null) {
+	function clearCache(?string $class = null, $ids = null): void {
 		if($class == null) {
 			foreach(ObjectCacher::GetAllInitializedCachers() as $cacher){
 				$cacher->clear();
@@ -339,7 +339,7 @@ class Cache{
 	/**
 	 * $ids = Cache::CachedIds("Article"); // array(123,453,223)
 	 */
-	static function CachedIds($class){
+	static function CachedIds(string $class): array {
 		return self::GetInstance()->getCacher($class)->cachedIds();
 	}
 }
