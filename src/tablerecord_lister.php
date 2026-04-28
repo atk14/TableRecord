@@ -188,7 +188,6 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 	 * @param TableRecord $record
 	 */
 	function append($record){
-		$o = $this->_options;
 		$this->_add($record);
 	}
 
