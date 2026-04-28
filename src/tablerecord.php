@@ -166,7 +166,8 @@ class TableRecord extends inobj {
 			$options["sequence_name"] = $this->_determineSequenceName();
 		}
 		$this->_SequenceName = $options["sequence_name"];
-		static::$_DoNotReadValues = $options["do_not_read_values"];
+
+		static::$_DoNotReadValues[$class_name] = $options["do_not_read_values"];
 
 		$this->_IdFieldName = $options["id_field_name"];
 		$this->_IdFieldTypeForce = $options["id_field_type"];
@@ -1440,9 +1441,11 @@ class TableRecord extends inobj {
 	 * @ignore
 	 */
 	function _fieldsToRead(){
+		$class_name = get_class($this);
+
 		$out = array();
 		foreach($this->_getTableStructure() as $field => $vals){
-			if(in_array($field,static::$_DoNotReadValues)){ continue; }
+			if(in_array($field,static::$_DoNotReadValues[$class_name])){ continue; }
 			$out[] = $field;
 		}
 		return $out;
