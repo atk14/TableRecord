@@ -20,7 +20,7 @@ defined("TABLERECORD_MAX_NUMBER_OF_RECORDS_READ_AT_ONCE") || define("TABLERECORD
  */
 class TableRecord extends inobj {
 
-	protected $class;
+	protected $_className;
 
 	/**
 	 * Time interval to store table structures cached
@@ -85,11 +85,11 @@ class TableRecord extends inobj {
 	 * - <b>dbmole</b> - use own dbmole in case model uses different database.
 	 */
 	function __construct($table_name_or_options = null,$options = array()){
-		$this->class = get_class($this);
+		$this->_className = get_class($this);
 
-		if(!isset(self::$_Recipes[$this->class])){
+		if(!isset(self::$_Recipes[$this->_className])){
 	
-			$class = $this->class;
+			$class = $this->_className;
 
 			self::$_Recipes[$class] = [];
 
@@ -130,7 +130,7 @@ class TableRecord extends inobj {
 			self::$_Recipes[$class]["id_field_type"] = $options["id_field_type"];
 		}
 
-		$this->dbmole = self::$_DbmoleInstances[$this->class];
+		$this->dbmole = self::$_DbmoleInstances[$this->_className];
 
 		parent::__construct();
 	}
@@ -348,21 +348,21 @@ class TableRecord extends inobj {
 	 *
 	 * @return string
 	 */
-	final function getTableName(){ return self::$_Recipes[$this->class]["table_name"]; }
+	final function getTableName(){ return self::$_Recipes[$this->_className]["table_name"]; }
 
 	/**
 	 * Returns name of id field.
 	 *
 	 * @return string
 	 */
-	final function getIdFieldName() { return self::$_Recipes[$this->class]["id_field_name"]; }
+	final function getIdFieldName() { return self::$_Recipes[$this->_className]["id_field_name"]; }
 
 	/**
 	 * Returns name of table sequence
 	 *
 	 * @return string
 	 */
-	function getSequenceName(){ return self::$_Recipes[$this->class]["sequence_name"]; }
+	function getSequenceName(){ return self::$_Recipes[$this->_className]["sequence_name"]; }
 
 	/**
 	 * Returns record id.
@@ -1345,10 +1345,9 @@ class TableRecord extends inobj {
 	 *
 	 * @return null
 	 */
-	function destroy(){
+	function destroy():void {
 		$this->_Hook_BeforeDestroy();
 		$this->dbmole->doQuery("DELETE FROM ".$this->dbmole->escapeTableName4Sql($this->getTableName())." WHERE ".$this->_escapeColumnName4Sql($this->getIdFieldName())."=:id",array(":id" => $this->_Id));
-		return null;
 	}
 
 	/**
@@ -1403,7 +1402,7 @@ class TableRecord extends inobj {
 	function _fieldsToRead(){
 		$out = array();
 		foreach($this->_getTableStructure() as $field => $vals){
-			if(in_array($field,self::$_Recipes[$this->class]["do_not_read_values"])){ continue; }
+			if(in_array($field,self::$_Recipes[$this->_className]["do_not_read_values"])){ continue; }
 			$out[] = $field;
 		}
 		return $out;
@@ -1581,8 +1580,8 @@ class TableRecord extends inobj {
 	}
 
 	protected function _getIdFieldType(){
-		if(!is_null(self::$_Recipes[$this->class]["id_field_type"])){
-			return self::$_Recipes[$this->class]["id_field_type"];
+		if(!is_null(self::$_Recipes[$this->_className]["id_field_type"])){
+			return self::$_Recipes[$this->_className]["id_field_type"];
 		}
 
 		$cache_key = $this->dbmole->getDatabaseType().".".$this->dbmole->getConfigurationName().".".$this->getTableName();
