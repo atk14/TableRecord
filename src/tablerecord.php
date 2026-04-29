@@ -1003,7 +1003,7 @@ class TableRecord extends inobj {
 		$objs = array();
 
 		if(sizeof($bind_ar)>0){
-			$query = "SELECT ".join(",",$this->_escapeColumnName4Sql($this->_fieldsToRead()))." FROM ".$this->dbmole->escapeTableName4Sql($this->getTableName())." WHERE ".$this->getIdFieldName()." IN (".join(", ",array_keys($bind_ar)).")";
+			$query = "SELECT ".join(",",$this->_escapeColumnName4Sql($this->_fieldsToRead()))." FROM ".$this->dbmole->escapeTableName4Sql($this->getTableName())." WHERE ".$this->_escapeColumnName4Sql($this->getIdFieldName())." IN (".join(", ",array_keys($bind_ar)).")";
 			$rows = $this->dbmole->selectRows($query,$bind_ar);
 			if(!is_array($rows)){ return null; }
 			foreach($rows as $row){
@@ -1309,7 +1309,7 @@ class TableRecord extends inobj {
 		if(is_array($fields)){
 			$fields = join(",",$fields);
 		}
-		if(!$row = $this->dbmole->selectFirstRow("SELECT $fields FROM ".$this->dbmole->escapeTableName4Sql($this->getTableName())." WHERE ".$this->getIdFieldName()."=:id",array(":id" => $this->_Id))){
+		if(!$row = $this->dbmole->selectFirstRow("SELECT $fields FROM ".$this->dbmole->escapeTableName4Sql($this->getTableName())." WHERE ".$this->_escapeColumnName4Sql($this->getIdFieldName())."=:id",array(":id" => $this->_Id))){
 			return null;
 		}
 		$this->_setRecordValues($row);
