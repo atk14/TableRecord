@@ -487,7 +487,7 @@ class TableRecord extends inobj {
 		}
 
 		if($options["use_cache"]){
-			return Cache::Get(get_class($this),$id);
+			return Cache::Get($this->_className,$id);
 		}
 
 		settype($id,$this->_getIdFieldType());
@@ -635,7 +635,7 @@ class TableRecord extends inobj {
 		unset($options["use_cache"]);
 
 		$finder = new TableRecord_Finder(array(
-			"class_name" => get_class($this),
+			"class_name" => $this->_className,
 			"query" => $query,
 			"query_count" => $query_count,
 			"options" => $options, // options for querying
@@ -645,7 +645,7 @@ class TableRecord extends inobj {
 
 		// TODO: this should be in TableRecord_Finder
 		if($use_cache){
-			Cache::Prepare(get_class($this),$finder->getRecordIds());
+			Cache::Prepare($this->_className,$finder->getRecordIds());
 		}
 
 		return $finder;
@@ -975,7 +975,7 @@ class TableRecord extends inobj {
 		}
 
 
-		$class_name = get_class($this);
+		$class_name = $this->_className;
 
 		if($options["use_cache"]){
 			$out = Cache::Get($class_name,$ids);
@@ -1054,7 +1054,7 @@ class TableRecord extends inobj {
 			return $this->_RecordValues[$field_name];
 		}
 		if(!in_array($field_name,$this->getKeys())){
-			throw new Exception(get_class($this)."::getValue() accesses non existing field ".$this->getTableName().".$field_name");
+			throw new Exception("$this->_className::getValue() accesses non existing field ".$this->getTableName().".$field_name");
 		}
 		$this->_readValuesIfWasNotRead($field_name);
 		return isset($this->_RecordValues[$field_name]) ? $this->_RecordValues[$field_name] : null;
@@ -1358,7 +1358,7 @@ class TableRecord extends inobj {
 	function _insertRecord($values,$options = array()){
 		$values=(array)$values;
 		$options=(array)$options;
-		$class_name = get_class($this);
+		$class_name = $this->_className;
 
 		$options += array(
 			"use_cache" => TABLERECORD_USE_CACHE_BY_DEFAULT,
@@ -1390,8 +1390,8 @@ class TableRecord extends inobj {
 			$id = $this->dbmole->selectInsertId();
 		}
 		
-		Cache::Clear(get_class($this),$id); // ensure that the newly created record is not stored in the Cache (obviously as null)
-		$out = TableRecord::_GetInstanceById(get_class($this),$id,array("use_cache" => $options["use_cache"]));
+		Cache::Clear($this->_className,$id); // ensure that the newly created record is not stored in the Cache (obviously as null)
+		$out = TableRecord::_GetInstanceById($this->_className,$id,array("use_cache" => $options["use_cache"]));
 		$out->_Hook_afterCreateNewRecord();
 		return $out;
 	}
@@ -1464,7 +1464,7 @@ class TableRecord extends inobj {
 	 * @return string
 	 */
 	function toString(){
-		return sprintf("%s#%s",get_class($this),$this->getId());
+		return sprintf("%s#%s",$this->_className,$this->getId());
 	}
 
 	/**
@@ -1519,7 +1519,7 @@ class TableRecord extends inobj {
 	function __call($name,$arguments){
 		static $CACHES = array();
 
-		$class_name = get_class($this);
+		$class_name = $this->_className;
 
 		if(!isset($CACHES[$class_name])){
 			$CACHES[$class_name] = array(
@@ -1663,7 +1663,7 @@ class TableRecord extends inobj {
 				continue;
 			}
 			if($internal_type == "integer"){
-				#in 32 system integer can overflow, but float can be sufficient 
+				#in 32bit system integer can overflow, but float can be sufficient 
 				$real = (float)$value;
 				$value = (int)$value;
 				if($value!=$real){
