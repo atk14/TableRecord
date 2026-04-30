@@ -142,6 +142,7 @@ class TableRecord_Finder implements ArrayAccess, Iterator, Countable {
 	function getQueryData($id = null, $field = null) {
 		$this->getRecordIds();
 		if(!$this->associative) {
+			$this->associative = [];
 			foreach($this->_RecordData as $row) {
 				$aid = $row[$this->_RecordKey];
 				$this->associative[$aid] = $row;
