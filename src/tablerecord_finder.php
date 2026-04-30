@@ -165,7 +165,7 @@ class TableRecord_Finder implements ArrayAccess, Iterator, Countable {
 	 * 
 	 */
 	function getRecordsDisplayed(){
-		return sizeof($this->getRecords());
+		return count($this->getRecords());
 	}
 
 	/**

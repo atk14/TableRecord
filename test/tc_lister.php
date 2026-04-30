@@ -88,7 +88,7 @@ class TcLister extends TcBase{
 		$lister2[] = $tony;
 		$this->assertTrue($lister2->contains($john));
 		$this->assertTrue($lister2->contains($tony));
-		$this->assertEquals(2, sizeof($lister2));
+		$this->assertEquals(2, count($lister2));
 
 		$lister = $this->article->getAuthorsLister();
 
@@ -204,17 +204,17 @@ class TcLister extends TcBase{
 	function _test_authors($expected_authors,$test_saved_ranks = false){
 		$authors = $this->article->getAuthors();
 
-		$this->assertEquals(sizeof($expected_authors),sizeof($authors));
-		for($i=0;$i<sizeof($authors);$i++){
+		$this->assertEquals(count($expected_authors),count($authors));
+		for($i=0;$i<count($authors);$i++){
 			$this->assertEquals($expected_authors[$i]->getId(),$authors[$i]->getId());
 		}
 
 		$lister = $this->article->getAuthorsLister();
 		$items = $lister->getItems();
 		# test lister behaves as countable
-		$this->assertEquals(sizeof($items), sizeof($lister));
+		$this->assertEquals(count($items), count($lister));
 
-		for($i=0;$i<sizeof($authors);$i++){
+		for($i=0;$i<count($authors);$i++){
 			$this->assertEquals($i,$items[$i]->getRank());
 			if($test_saved_ranks){
 				$this->assertEquals($i,$items[$i]->_getSavedRank());
@@ -237,10 +237,10 @@ class TcLister extends TcBase{
 		$record_ids = $lister->getRecordIds();
 		$ids = $lister->getIds();
 
-		$this->assertEquals(sizeof($records),sizeof($record_ids));
-		$this->assertEquals(sizeof($records),sizeof($ids));
+		$this->assertEquals(count($records),count($record_ids));
+		$this->assertEquals(count($records),count($ids));
 
-		for($i=0;$i<sizeof($expected_authors);$i++){
+		for($i=0;$i<count($expected_authors);$i++){
 			$this->assertEquals($expected_authors[$i]->getId(),$records[$i]->getId());
 			$this->assertEquals($expected_authors[$i]->getId(),$record_ids[$i]);
 
@@ -250,7 +250,7 @@ class TcLister extends TcBase{
 		//
 
 		$authors2 = $this->article2->getAuthors();
-		$this->assertEquals(2,sizeof($authors2));
+		$this->assertEquals(2,count($authors2));
 		$this->assertEquals("John",$authors2[0]->getName());
 	}
 
@@ -259,7 +259,7 @@ class TcLister extends TcBase{
 
 		$current_objects = $lister->getRecords();
 
-		$this->assertEquals(sizeof($objects),sizeof($current_objects));
+		$this->assertEquals(count($objects),count($current_objects));
 		foreach($objects as $o){
 			$current_o = array_shift($current_objects);
 			$this->assertEquals($o->getId(),$current_o->getId());

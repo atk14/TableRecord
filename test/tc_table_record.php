@@ -516,14 +516,14 @@ class TcTableRecord extends TcBase{
 		// int[]
 		$records = TestTable::GetInstanceById(array($id2,$id1));
 		$this->assertTrue(is_array($records));
-		$this->assertEquals(2,sizeof($records));
+		$this->assertEquals(2,count($records));
 		$this->assertEquals($id2,$records[0]->getId());
 		$this->assertEquals($id1,$records[1]->getId());
 
 		// obj[]
 		$records = TestTable::GetInstanceById(array($record2->getId(),$record1->getId()));
 		$this->assertTrue(is_array($records));
-		$this->assertEquals(2,sizeof($records));
+		$this->assertEquals(2,count($records));
 		$this->assertEquals($id2,$records[0]->getId());
 		$this->assertEquals($id1,$records[1]->getId());
 	
@@ -537,7 +537,7 @@ class TcTableRecord extends TcBase{
 
 		$records = TestTable::GetInstanceById(array($id1,-1000,$id2));
 		$this->assertTrue(is_array($records));
-		$this->assertEquals(3,sizeof($records));
+		$this->assertEquals(3,count($records));
 		$this->assertEquals($id1,$records[0]->getId());
 		$this->assertNull($records[1]);
 		$this->assertEquals($id2,$records[2]->getId());
@@ -650,36 +650,36 @@ class TcTableRecord extends TcBase{
 		$century2 = $this->_vytvor_testovaci_zaznam(array("title" => "Century", "text" => "No code"));
 
 		$recs = TableRecord::FindAll(array("class_name" => "TestTable", "conditions" => array("title" => "Century")));
-		$this->assertEquals(2,sizeof($recs));
+		$this->assertEquals(2,count($recs));
 		// defaultni trideni je podle id
 		$this->assertEquals($century->getId(),$recs[0]->getId());
 		$this->assertEquals($century2->getId(),$recs[1]->getId());
 
 		$recs = TableRecord::FindAll(array("class_name" => "TestTable", "conditions" => array("title" => "Century", "text" => null)));
-		$this->assertEquals(1,sizeof($recs));
+		$this->assertEquals(1,count($recs));
 		$this->assertEquals($century->getId(),$recs[0]->getId());
 
 		$century3 = $this->_vytvor_testovaci_zaznam(array("title" => "Another Century","text" => "Uknown"));
 
 		$recs = TableRecord::FindAll(array("class_name" => "TestTable", "conditions" => array("title='Century' OR title='Another Century'")));
-		$this->assertEquals(3,sizeof($recs));
+		$this->assertEquals(3,count($recs));
 
 		// vyhledavani pomoci `field_name` IN (values)
 		$recs = TableRecord::FindAll(array("class_name" => "TestTable", "conditions" => array("title" => array("Century","Another Century"))));
-		$this->assertEquals(3,sizeof($recs));
+		$this->assertEquals(3,count($recs));
 
 		// ted testujeme to, ze poskladane query musi mit na prisl. mistech zavorky:
 		// ... WHERE (title='Century' OR title='Another Century') AND (text IS NULL)
 		// napred spatny dotaz
 		$recs = TableRecord::FindAll(array("class_name" => "TestTable", "conditions" => array("title='Century' OR title='Another Century' AND text IS NULL")));
-		$this->assertTrue(sizeof($recs)!=1);
+		$this->assertTrue(count($recs)!=1);
 		// ted spravny dotaz
 		$recs = TableRecord::FindAll(array("class_name" => "TestTable", "conditions" => array("title='Century' OR title='Another Century'","text IS NULL")));
-		$this->assertEquals(1,sizeof($recs));
+		$this->assertEquals(1,count($recs));
 		$this->assertEquals($century->getId(),$recs[0]->getId());
 
 		$recs = TableRecord::FindAll(array("class_name" => "TestTable", "conditions" => array("title='Century' OR title='Another Century'","text IS NOT NULL"),"order_by" => "title"));
-		$this->assertEquals(2,sizeof($recs));
+		$this->assertEquals(2,count($recs));
 		$this->assertEquals($century3->getId(),$recs[0]->getId());
 		$this->assertEquals($century2->getId(),$recs[1]->getId());
 
@@ -694,7 +694,7 @@ class TcTableRecord extends TcBase{
 			"bind" => array(":title1" => 'Century', ":title2" => "Another Century"),
 			"order" => "title",
 		));
-		$this->assertEquals(2,sizeof($recs));
+		$this->assertEquals(2,count($recs));
 		$this->assertEquals($century3->getId(),$recs[0]->getId());
 		$this->assertEquals($century2->getId(),$recs[1]->getId());
 
@@ -927,12 +927,12 @@ class TcTableRecord extends TcBase{
 	}
 
 	function _test_fall($recs){
-		$this->assertEquals(1,sizeof($recs));
+		$this->assertEquals(1,count($recs));
 		$this->assertEquals("Fall",$recs[0]->getTitle());
 	}
 
 	function _test_null($recs){
-		$this->assertEquals(1,sizeof($recs));
+		$this->assertEquals(1,count($recs));
 		$this->assertNull($recs[0]->getTitle());
 	}
 

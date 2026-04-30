@@ -108,26 +108,26 @@ class TcFindingRecords extends TcBase{
 			),
 			"order_by" => "created_at DESC",
 		));
-		$this->assertEquals(2,sizeof($ar));
+		$this->assertEquals(2,count($ar));
 		$this->assertEquals($non_unique_2->getId(),$ar[0]->getId());
 		$this->assertEquals($non_unique_1->getId(),$ar[1]->getId());
 
 		$ar = Article::FindAll("title","Foo Bar",array("order_by" => "created_at DESC"));
-		$this->assertEquals(4,sizeof($ar));
+		$this->assertEquals(4,count($ar));
 		$this->assertEquals($non_unique_2->getId(),$ar[0]->getId());
 		$this->assertEquals($non_unique_1->getId(),$ar[1]->getId());
 		$this->assertEquals($an_imitation->getId(),$ar[2]->getId());
 		$this->assertEquals($the_true_one->getId(),$ar[3]->getId());
 
 		$ar = Article::FindAll("title","Foo Bar","body","Just an Imitation",array("order_by" => "created_at DESC"));
-		$this->assertEquals(1,sizeof($ar));
+		$this->assertEquals(1,count($ar));
 		$this->assertEquals($an_imitation->getId(),$ar[0]->getId());
 
 		$ar = Article::FindAll("title=:title AND body=:body",array(
 			":title" => "Foo Bar",
 			":body" => "Just an Imitation"
 		),array("order_by" => "created_at DESC"));
-		$this->assertEquals(1,sizeof($ar));
+		$this->assertEquals(1,count($ar));
 		$this->assertEquals($an_imitation->getId(),$ar[0]->getId());
 	}
 
@@ -255,13 +255,13 @@ class TcFindingRecords extends TcBase{
 		// --
 
 		$ary = Article::FindAllByTitle("Yellow",array("order_by" => "created_at"));
-		$this->assertEquals(3,sizeof($ary));
+		$this->assertEquals(3,count($ary));
 		$this->assertEquals($yello_first->getId(),$ary[0]->getId());
 		$this->assertEquals($yello_middle->getId(),$ary[1]->getId());
 		$this->assertEquals($yello_last->getId(),$ary[2]->getId());
 
 		$ary = Article::FindAllByTitle("Yellow",array("order_by" => "created_at DESC", "limit" => 1));
-		$this->assertEquals(1,sizeof($ary));
+		$this->assertEquals(1,count($ary));
 		$this->assertEquals($yello_last->getId(),$ary[0]->getId());
 	}
 

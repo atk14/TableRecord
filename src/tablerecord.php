@@ -617,7 +617,7 @@ class TableRecord extends inobj {
 
 		}else{
 			$query = $dbmole->escapeTableName4Sql($table_name);
-			if(sizeof($conditions)>0){
+			if(count($conditions)>0){
 				$query .= " WHERE (".join(") AND (",$conditions).")";
 			}
 
@@ -745,7 +745,7 @@ class TableRecord extends inobj {
 		TableRecord::_NormalizeConditions($conditions,$bind_ar);
 
 		$query = "SELECT ".$dbmole->escapeColumnName4Sql($id_field_name)." FROM ".$dbmole->escapeTableName4Sql($table_name);
-		if(sizeof($conditions)>0){
+		if(count($conditions)>0){
 			$query .= " WHERE (".join(") AND (",$conditions).")";
 		}
 		$query .= " ORDER BY $options[order]";
@@ -851,15 +851,15 @@ class TableRecord extends inobj {
 	 */
 	static function _NormalizeOptions($args,&$options){
 		if(!isset($args[0])){ $args[0] = array(); }
-		if(sizeof($args)==1){ $args[1] = array(); }
+		if(count($args)==1){ $args[1] = array(); }
 
 		$extra_options = null;
 
-		if(sizeof($args)==2){
+		if(count($args)==2){
 			$options = $args[0];
 			$bind_ar = $args[1];
 			$args = array();
-		}elseif(sizeof($args)==3 && is_string($args[0])){
+		}elseif(count($args)==3 && is_string($args[0])){
 			$options = $args[0];
 			$bind_ar =  $args[1];
 			$extra_options = $args[2];
@@ -871,7 +871,7 @@ class TableRecord extends inobj {
 			$bind_ar = array();
 			$conditions = array();
 
-			while(sizeof($args)>=2){
+			while(count($args)>=2){
 				$field = array_shift($args);
 				$value = array_shift($args);
 				if(is_null($value)){
@@ -956,7 +956,7 @@ class TableRecord extends inobj {
 		),$options);
 
 		$MAX_ELEMENTS = TABLERECORD_MAX_NUMBER_OF_RECORDS_READ_AT_ONCE;
-		if(sizeof($ids)>$MAX_ELEMENTS){
+		if(count($ids)>$MAX_ELEMENTS){
 			$out = array();
 
 			$part = array();
@@ -1011,7 +1011,7 @@ class TableRecord extends inobj {
 
 		$objs = array();
 
-		if(sizeof($bind_ar)>0){
+		if(count($bind_ar)>0){
 			$query = "SELECT ".join(",",$this->_escapeColumnName4Sql($this->_fieldsToRead()))." FROM ".$this->dbmole->escapeTableName4Sql($this->getTableName())." WHERE ".$this->_escapeColumnName4Sql($this->getIdFieldName())." IN (".join(", ",array_keys($bind_ar)).")";
 			$rows = $this->dbmole->selectRows($query,$bind_ar);
 			if(!is_array($rows)){ return null; }
@@ -1222,7 +1222,7 @@ class TableRecord extends inobj {
 			}
 		}
 
-		if(sizeof($data)==0){ // nothing to update
+		if(count($data)==0){ // nothing to update
 			return true;
 		}
 

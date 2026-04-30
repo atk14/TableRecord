@@ -70,7 +70,7 @@ class ObjectCacher {
 		// It's ok to read more records than $mandatory_ids
 		// But it's unwise to read more than TABLERECORD_MAX_NUMBER_OF_RECORDS_READ_AT_ONCE records.
 		foreach(array_diff($this->prepare,$ids_to_be_read) as $id){
-			if(sizeof($ids_to_be_read)>=TABLERECORD_MAX_NUMBER_OF_RECORDS_READ_AT_ONCE){ break; }
+			if(count($ids_to_be_read)>=TABLERECORD_MAX_NUMBER_OF_RECORDS_READ_AT_ONCE){ break; }
 			$ids_to_be_read[$id] = $id;
 		}
 

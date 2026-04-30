@@ -28,8 +28,8 @@ class TcFinder extends TcBase{
 		$records = $finder->getRecords();
 		$this->assertEquals(3,$finder->getTotalAmount());
 		$this->assertEquals(1,$finder->getRecordsDisplayed());
-		$this->assertEquals(1,sizeof($records));
-		$this->assertEquals(1,sizeof($finder));
+		$this->assertEquals(1,count($records));
+		$this->assertEquals(1,count($finder));
 		$this->assertEquals("Apples",$finder[0]->getTitle());
 		$this->assertEquals("Apples",$records[0]->getTitle());
 
@@ -46,8 +46,8 @@ class TcFinder extends TcBase{
 		$records = $finder->getRecords();
 		$this->assertEquals(3,$finder->getTotalAmount());
 		$this->assertEquals(2,$finder->getRecordsDisplayed());
-		$this->assertEquals(2,sizeof($records));
-		$this->assertEquals(2,sizeof($finder));
+		$this->assertEquals(2,count($records));
+		$this->assertEquals(2,count($finder));
 
 		$this->assertEquals("and",$records[0]->getTitle());
 		$this->assertEquals("and",$finder[0]->getTitle());
@@ -92,8 +92,8 @@ class TcFinder extends TcBase{
 
 		$records = $finder->getRecords();
 		$record_ids = $finder->getRecordIds();
-		$this->assertEquals(2,sizeof($record_ids));
-		$this->assertEquals(2,sizeof($records));
+		$this->assertEquals(2,count($record_ids));
+		$this->assertEquals(2,count($records));
 		$this->assertEquals($apples->getId(),$records[0]->getId());
 		$this->assertEquals($and->getId(),$records[1]->getId());
 		$this->assertEquals((int)$apples->getId(),(int)$record_ids[0]);
@@ -103,7 +103,7 @@ class TcFinder extends TcBase{
 		$finder = TestTable::Finder("an_integer",10,"title","Apples",array("order_by" => "UPPER(title) DESC"));
 
 		$records = $finder->getRecords();
-		$this->assertEquals(1,sizeof($records));
+		$this->assertEquals(1,count($records));
 		$this->assertEquals($apples->getId(),$records[0]->getId());
 
 		// -- searching by a custom query
@@ -116,7 +116,7 @@ class TcFinder extends TcBase{
 		));
 
 		$this->assertEquals(3,$finder->getTotalAmount());
-		$this->assertEquals(2,sizeof($finder));
+		$this->assertEquals(2,count($finder));
 		$this->assertEquals("Apples",$finder[0]->getTitle());
 		$this->assertEquals("Oranges",$finder[1]->getTitle());
 	}
@@ -125,8 +125,8 @@ class TcFinder extends TcBase{
 		$finder = TableRecord::EmptyFinder();
 
 		$records = $finder->getRecords();
-		$this->assertEquals(0,sizeof($records));
-		$this->assertEquals(0,sizeof($finder));
+		$this->assertEquals(0,count($records));
+		$this->assertEquals(0,count($finder));
 		$this->assertEquals(0,$finder->getTotalAmount());
 		$this->assertEquals(0,$finder->getRecordsDisplayed());
 
