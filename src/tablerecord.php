@@ -1504,9 +1504,11 @@ class TableRecord extends inobj {
 	 * @ignore
 	 */
 	function __wakeup(){
-		$dbmole_class_name = $this->_dbmole_wakeup_data_["class_name"];
-		$dbmole_configuration = $this->_dbmole_wakeup_data_["configuration"];
-		$this->dbmole = $dbmole_class_name::GetInstance($dbmole_configuration);
+		if(!isset(self::$_Recipes[$this->_className])){
+			new $this->_className();
+		}
+
+		$this->dbmole = self::$_DbmoleInstances[$this->_className];
 	}
 
 	/**

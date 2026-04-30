@@ -1,27 +1,28 @@
 {
     "name": "atk14/table-record",
     "description": "Base class for manipulating database records for Atk14 framework.",
-		"keywords": ["atk14","database","record"],
+    "keywords": ["atk14","database","record"],
     "type": "library",
     "homepage": "https://github.com/atk14/TableRecord",
     "license": "MIT",
     "require": {
-			"php": ">=7.1.0",
-			"atk14/dbmole": "1.* >=1.2",
-			"atk14/string4": "0.*",
-			"atk14/functions": "*"
-		},
-		"require-dev": {
-			"atk14/tester": "*"
-		},
-		"autoload": {
-			"classmap": ["src"],
-			"files": [
-				"src/tablerecord_databaseaccessor_postgresql.php",
-				"src/tablerecord_databaseaccessor_mysql.php"
-			]
-		},
-		"autoload-dev": {
-			"classmap": ["src","test/models","test"]
-		}
+      "php": ">=7.1.0",
+      "atk14/dbmole": "1.* >=1.2",
+      "atk14/string4": "0.*",
+      "atk14/functions": "*"
+    },
+    "require-dev": {
+      "atk14/tester": "*",
+      "atk14/files": "*"
+    },
+    "autoload": {
+      "classmap": ["src"],
+      "files": [
+        "src/tablerecord_databaseaccessor_postgresql.php",
+        "src/tablerecord_databaseaccessor_mysql.php"
+      ]
+    },
+    "autoload-dev": {
+      "classmap": ["src","test/models","test"]
+    }
 }
