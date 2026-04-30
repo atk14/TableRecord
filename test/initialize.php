@@ -4,7 +4,7 @@
 setlocale(LC_NUMERIC,"C"); // we need to display float like 123.456
 
 function &dbmole_connection($dbmole){
-	static $connections = array();
+	static $connections = [];
 
 	if($dbmole->getDatabaseType()=="postgresql"){
 		if(!isset($connections["postgresql"])){

@@ -2,9 +2,9 @@
 class TcCache extends TcBase{
 
 	function test(){
-		$record1 = TestTable::CreateNewRecord(array());
+		$record1 = TestTable::CreateNewRecord([]);
 
-		$this->assertEquals(array(),Cache::CachedIds("TestTable"));
+		$this->assertEquals([],Cache::CachedIds("TestTable"));
 
 		$rec = Cache::Get("TestTable",$record1->getId());
 		$this->assertEquals($record1->getId(),$rec->getId());
@@ -60,7 +60,7 @@ class TcCache extends TcBase{
 
 		//
 		Cache::Clear();
-		$this->assertEquals(array(),Cache::CachedIds("TestTable"));
+		$this->assertEquals([],Cache::CachedIds("TestTable"));
 		$cached_r2b = Cache::Get("TestTable",$record2);
 		$this->assertEquals(array($record2->getId() => $record2->getId()),Cache::CachedIds("TestTable"));
 
@@ -72,7 +72,7 @@ class TcCache extends TcBase{
 		Cache::Clear("TestTable");
 		$this->assertFalse(Cache::GetObjectCacher('TestTable')->inCache($record2));
 
-		$this->assertEquals(array(),Cache::CachedIds("TestTable"));
+		$this->assertEquals([],Cache::CachedIds("TestTable"));
 		Cache::Prepare('TestTable', $record1);
 		$this->assertEquals(array($record1->getId() => $record1->getId()),Cache::CachedIds("TestTable"));
 		$this->assertEquals(array(null, null),Cache::GetObjectCacher("TestTable")->getCached( array($record2->getId(), $record1->getId() ) ));
@@ -155,15 +155,15 @@ class TcCache extends TcBase{
 
 		$cacher = Cache::GetObjectCacher("Article");
 
-		$this->assertEquals(array(),$cacher->getCached());
-		$this->assertEquals(array(),$cacher->getCached(true));
+		$this->assertEquals([],$cacher->getCached());
+		$this->assertEquals([],$cacher->getCached(true));
 
 		$this->assertEquals(array(null,null,null),$cacher->getCached(array(123,124,125)));
 		$this->assertEquals(array(null,null,null),$cacher->getCached(array(123,124,125),true));
 
 		Cache::Prepare("Article",123);
 
-		$this->assertEquals(array(),$cacher->getCached());
+		$this->assertEquals([],$cacher->getCached());
 		$this->assertEquals(array(123 => $a123),$cacher->getCached(true));
 
 		$this->assertEquals(array($a123,null,null),$cacher->getCached(array(123,124,125)));

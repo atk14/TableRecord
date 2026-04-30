@@ -265,7 +265,7 @@ class TcFindingRecords extends TcBase{
 		$this->assertEquals($yello_last->getId(),$ary[0]->getId());
 	}
 
-	function _find_first($params,$options = array()){
+	function _find_first($params,$options = []){
 		$article = Article::CreateNewRecord(array(
 			"title" => "Creepy Green Light"
 		));
@@ -281,7 +281,7 @@ class TcFindingRecords extends TcBase{
 		$article->destroy();
 	}
 
-	function _find_first_old_way($params,$options = array()){
+	function _find_first_old_way($params,$options = []){
 		$article = Article::CreateNewRecord(array(
 			"title" => "Creepy Green Light"
 		));

@@ -4,7 +4,7 @@ class TcTableRecord extends TcBase{
 	function test_record_creation(){
 		$this->_empty_test_table();
 
-		$record = TestTable::CreateNewRecord(array());
+		$record = TestTable::CreateNewRecord([]);
 
 		$this->assertEquals("test_table_id_seq",$record->getSequenceName());
 		$this->assertEquals($this->dbmole->SelectSingleValue("SELECT CURRVAL('test_table_id_seq')","integer"),$record->getId());
@@ -575,7 +575,7 @@ class TcTableRecord extends TcBase{
 			"znak",
 		),$keys);
 
-		$article = Article::CreateNewRecord(array());
+		$article = Article::CreateNewRecord([]);
 		$this->assertEquals(array(
 			"id",
 			"title",
@@ -596,12 +596,12 @@ class TcTableRecord extends TcBase{
 
 		// nekolik zpusobu zapisu conditions...
 		// ... napred nenajdeme nic
-		$this->assertEquals(array(),TableRecord::FindAll(array("class_name" => "TestTable", "conditions" => "title='Monday'")));
-		$this->assertEquals(array(),TableRecord::FindAll(array("class_name" => "TestTable", "conditions" => "title=:title", "bind_ar" => array(":title" => "Monday"))));
-		$this->assertEquals(array(),TableRecord::FindAll(array("class_name" => "TestTable", "conditions" => array("title='Monday'"))));
-		$this->assertEquals(array(),TableRecord::FindAll(array("class_name" => "TestTable", "conditions" => array("title='Monday'"), "bind_ar" => array(":title" => "Monday"))));
-		$this->assertEquals(array(),TableRecord::FindAll(array("class_name" => "TestTable", "conditions" => array("title" => "Monday"))));
-		$this->assertEquals(array(),TableRecord::FindAll(array("class_name" => "TestTable", "conditions" => array("title" => array("Monday","Tuesday")))));
+		$this->assertEquals([],TableRecord::FindAll(array("class_name" => "TestTable", "conditions" => "title='Monday'")));
+		$this->assertEquals([],TableRecord::FindAll(array("class_name" => "TestTable", "conditions" => "title=:title", "bind_ar" => array(":title" => "Monday"))));
+		$this->assertEquals([],TableRecord::FindAll(array("class_name" => "TestTable", "conditions" => array("title='Monday'"))));
+		$this->assertEquals([],TableRecord::FindAll(array("class_name" => "TestTable", "conditions" => array("title='Monday'"), "bind_ar" => array(":title" => "Monday"))));
+		$this->assertEquals([],TableRecord::FindAll(array("class_name" => "TestTable", "conditions" => array("title" => "Monday"))));
+		$this->assertEquals([],TableRecord::FindAll(array("class_name" => "TestTable", "conditions" => array("title" => array("Monday","Tuesday")))));
 
 		// .. pak budeme nalezat Fall
 		$recs = TableRecord::FindAll(array("class_name" => "TestTable", "conditions" => "title='Fall'"));
@@ -629,9 +629,9 @@ class TcTableRecord extends TcBase{
 
 		// vyhledavani null hodnoty...
 		// ... napred title s null hodnotou nemame
-		$this->assertEquals(array(),TableRecord::FindAll(array("class_name" => "TestTable", "conditions" => "title IS NULL")));
-		$this->assertEquals(array(),TableRecord::FindAll(array("class_name" => "TestTable", "conditions" => array("title IS NULL"))));
-		$this->assertEquals(array(),TableRecord::FindAll(array("class_name" => "TestTable", "conditions" => array("title" => null))));
+		$this->assertEquals([],TableRecord::FindAll(array("class_name" => "TestTable", "conditions" => "title IS NULL")));
+		$this->assertEquals([],TableRecord::FindAll(array("class_name" => "TestTable", "conditions" => array("title IS NULL"))));
+		$this->assertEquals([],TableRecord::FindAll(array("class_name" => "TestTable", "conditions" => array("title" => null))));
 		
 		// ... ted jej vytvorime
 		$null = $this->_vytvor_testovaci_zaznam(array("title" => null));
@@ -762,7 +762,7 @@ class TcTableRecord extends TcBase{
 		$this->assertEquals($next_id,($seq_nextval+1) * 1000);
 
 		$seq_nextval = Article::GetSequenceNextval();
-		$article = Article::CreateNewRecord(array());
+		$article = Article::CreateNewRecord([]);
 		$id = $article->getId();
 		$this->assertEquals($id,($seq_nextval+1) * 1000);
 	}
@@ -771,11 +771,11 @@ class TcTableRecord extends TcBase{
 		$this->assertEquals(1,TableRecord::ObjToId(1));
 		$this->assertEquals("ID",TableRecord::ObjToId("ID"));
 		$this->assertEquals(null,TableRecord::ObjToId(null));
-		$this->assertEquals(array(),TableRecord::ObjToId(array()));
+		$this->assertEquals([],TableRecord::ObjToId([]));
 
 		// 
-		$obj = TestTable::CreateNewRecord(array());
-		$obj2 = TestTable::CreateNewRecord(array());
+		$obj = TestTable::CreateNewRecord([]);
+		$obj2 = TestTable::CreateNewRecord([]);
 
 		$this->assertEquals($obj->getId(),TableRecord::ObjToId($obj->getId()));
 		$this->assertEquals($obj->getId(),TableRecord::ObjToId($obj));
@@ -936,7 +936,7 @@ class TcTableRecord extends TcBase{
 		$this->assertNull($recs[0]->getTitle());
 	}
 
-	function _vytvor_testovaci_zaznam($values = array()){
+	function _vytvor_testovaci_zaznam($values = []){
 		$values = array_merge(array(
 			"title" => "testovaci zaznam",
 			"price" => 13.60,

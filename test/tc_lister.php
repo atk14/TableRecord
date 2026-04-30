@@ -92,7 +92,7 @@ class TcLister extends TcBase{
 
 		$lister = $this->article->getAuthorsLister();
 
-		$this->_test_authors(array());
+		$this->_test_authors([]);
 
 		$lister->append($john);
 		$this->_test_authors(array($john));
@@ -177,8 +177,8 @@ class TcLister extends TcBase{
 		$lister->setRecords(array($john,$peter));
 		$this->_test_authors(array($john,$peter));
 
-		$lister->setRecords(array());
-		$this->_test_authors(array());
+		$lister->setRecords([]);
+		$this->_test_authors([]);
 
 		$lister->setRecords(array($paul,$john));
 		$this->_test_authors(array($paul,$john));

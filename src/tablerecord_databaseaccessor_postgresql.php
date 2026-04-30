@@ -8,7 +8,7 @@ class TableRecord_DatabaseAccessor_Postgresql implements iTableRecord_DatabaseAc
 	 *
 	 * @ignore
 	 */
-	static function ReadTableStructure($record,$options = array()){
+	static function ReadTableStructure($record,$options = []){
 		$schema = self::GetDefaultDatabaseSchema(); // e.g. "public"
 		$tblNameAr = explode(".", "$schema.".$record->getTableName());
 

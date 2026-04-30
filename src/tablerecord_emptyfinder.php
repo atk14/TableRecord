@@ -12,10 +12,10 @@
  * @package Atk14\TableRecord
  */
 class TableRecord_EmptyFinder extends TableRecord_Finder{
-	protected $_Records = array();
-	function __construct($options = array()){
+	protected $_Records = [];
+	function __construct($options = []){
 		$options += array(
-			"options" => array()
+			"options" => []
 		);
 		$options["options"] += array(
 			"offset" => null,
@@ -33,5 +33,5 @@ class TableRecord_EmptyFinder extends TableRecord_Finder{
 		/**
 		 * @return array always returns empty array
 		 */
-	function getRecords(){ return array(); }
+	function getRecords(){ return []; }
 }

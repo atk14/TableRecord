@@ -37,8 +37,8 @@
  */
 class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 
-	static protected $CACHE = array();
-	static protected $PREPARE = array();
+	static protected $CACHE = [];
+	static protected $PREPARE = [];
 
 	protected $iterator_offset = 0;
 
@@ -80,7 +80,7 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 	 *
 	 * @todo comment options
 	 */
-	function __construct($owner,$subjects,$options = array()){
+	function __construct($owner,$subjects,$options = []){
 		$owner_class = new String4(get_class($owner));
 		$owner_class_us = $owner_class->underscore();
 		$subjects = new String4($subjects);
@@ -143,7 +143,7 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 	 * $authors3 = $article3->getLister("Authors")->getRecords();
 	 * ```
 	 */
-	function prefetchDataFor($owners,$options = array()){
+	function prefetchDataFor($owners,$options = []){
 		$options += array(
 			"force_read" => false,
 		);
@@ -151,8 +151,8 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 		$owners = TableRecord::ObjToId($owners);
 		$c_key = $this->_getCacheKey();
 
-		if(!isset(self::$CACHE[$c_key])){ self::$CACHE[$c_key] = array(); }
-		if(!isset(self::$PREPARE[$c_key])){ self::$PREPARE[$c_key] = array(); }
+		if(!isset(self::$CACHE[$c_key])){ self::$CACHE[$c_key] = []; }
+		if(!isset(self::$PREPARE[$c_key])){ self::$PREPARE[$c_key] = []; }
 		$cached_ids = array_keys(self::$CACHE[$c_key]);
 
 		foreach($owners as $o_id){
@@ -324,7 +324,7 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 	 * - force_read `true` clears cache and reads dall records in a fresh state [default: false]
 	 * @return TableRecord_ListerItem[]
 	 */
-	function &getItems($options = array()){
+	function &getItems($options = []){
 		$options += array(
 			"force_read" => false,
 			"preread_data" => true,
@@ -347,12 +347,12 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 			$this->prefetchDataFor($cacher->cachedIds());
 		}
 
-		$ids_to_read = isset(self::$PREPARE[$c_key]) ? self::$PREPARE[$c_key] : array();
+		$ids_to_read = isset(self::$PREPARE[$c_key]) ? self::$PREPARE[$c_key] : [];
 		$ids_to_read[$owner_id] = $owner_id;
 		unset(self::$PREPARE[$c_key]);
 
 		foreach($ids_to_read as $id){
-			self::$CACHE[$c_key][$id] = array();
+			self::$CACHE[$c_key][$id] = [];
 		}
 
 		$rows = $this->_dbmole->selectRows("
@@ -384,8 +384,8 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 	 *
 	 * @return integer[]
 	 */
-	function getIds($options = array()){
-		$out = array();
+	function getIds($options = []){
+		$out = [];
 		foreach($this->getItems($options) as $item){ $out[] = $item->getId(); }
 		return $out;
 	}
@@ -400,8 +400,8 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 	 *
 	 * @return integer[]
 	 */
-	function getRecordIds($options = array()){
-		$out = array();
+	function getRecordIds($options = []){
+		$out = [];
 		foreach($this->getItems($options) as $item){ $out[] = $item->getRecordId(); }
 		return $out;
 	}
@@ -429,8 +429,8 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 	 * - force_read {@link getItems}
 	 * @return TableRecord[]
 	 */
-	function getRecords($options = array()){
-		$ids = array();
+	function getRecords($options = []){
+		$ids = [];
 		foreach($this->getItems($options) as $item){ $ids[] = $item->getRecordId(); }
 		return Cache::Get($this->getClassNameOfRecords(), $ids); // TODO: usage of the Cache should be set by an option
 	}
@@ -455,7 +455,7 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 		$records = array_map(
 			function($v) { return is_object($v)?$v->getId():$v; },
 		$records);
-		$insert = array();
+		$insert = [];
 
 		$rec = reset($records);
 		foreach($this->getItems() as $item){
@@ -678,7 +678,7 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 	 * Cleares whole cache
 	 */
 	static function ClearCache() {
-		self::$CACHE = array();
+		self::$CACHE = [];
 	}
 }
 
