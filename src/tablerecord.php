@@ -307,7 +307,7 @@ class TableRecord extends inobj {
 	static function IdToObj($id,$class_name){
 		if(!isset($id)){ return null; }
 		if(is_object($id)){ return $id; }
-		return call_user_func([$class_name,"GetInstanceById"],$id);
+		return $class_name::GetInstanceById($id);
 	}
 
 	/**
@@ -339,7 +339,7 @@ class TableRecord extends inobj {
 	 */
 	static function GetNextId(){
 		$class_name = get_called_class();
-		return call_user_func([$class_name,"GetSequenceNextval"]);
+		return $class_name::GetSequenceNextval();
 	}
 
 	/**
@@ -425,7 +425,7 @@ class TableRecord extends inobj {
 			return null;
 		}
 
-		return call_user_func([$class_name,"GetInstanceById"],$value);
+		return $class_name::GetInstanceById($value);
 	}
 
 	/**
@@ -1385,7 +1385,7 @@ class TableRecord extends inobj {
 		if(isset($values[$id_field])){
 			$id = $values[$id_field];
 		}else{
-			$id = call_user_func([$class_name,"GetNextId"]);
+			$id = $class_name::GetNextId();
 			if(!is_null($id)){
 				$values[$id_field] = $id;
 			}
@@ -1549,7 +1549,7 @@ class TableRecord extends inobj {
 
 			// Looking for ClassName or inobj_ClassName. The prefix inobj_ (which means internal object) exists on my legacy classes.
 			if($this->hasKey("{$field}_id") && (class_exists($c = (string)$field->camelize()) || class_exists($c = "inobj_$c"))){
-				return call_user_func_array([$c,"GetInstanceById"],[$this->getValue("{$field}_id")]);
+				return $c::GetInstanceById($this->getValue("{$field}_id"));
 			}
 		}
 
