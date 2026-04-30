@@ -366,11 +366,9 @@ class TableRecord extends inobj {
 	/**
 	 * Returns record id.
 	 *
-	 * TODO: make this function final
-	 *
 	 * @return mixed
 	 */
-	function getId(){
+	final function getId(){
 		$id_field = $this->getIdFieldName();
 		return isset($this->_RecordValues[$id_field]) ? $this->_RecordValues[$id_field] : null;
 	}
