@@ -644,7 +644,6 @@ class TableRecord extends inobj {
 			"use_cache" => $use_cache
 		],$dbmole);
 
-		// TODO: this should be in TableRecord_Finder
 		if($use_cache){
 			Cache::Prepare($class_name,$finder->getRecordIds());
 		}

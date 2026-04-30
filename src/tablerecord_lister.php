@@ -432,7 +432,7 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 	function getRecords($options = []){
 		$ids = [];
 		foreach($this->getItems($options) as $item){ $ids[] = $item->getRecordId(); }
-		return Cache::Get($this->getClassNameOfRecords(), $ids); // TODO: usage of the Cache should be set by an option
+		return Cache::Get($this->getClassNameOfRecords(), $ids);
 	}
 
 	/**
