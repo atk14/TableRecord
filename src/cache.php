@@ -43,7 +43,7 @@ class ObjectCacher {
 			throw new Exception("Cache: class $class doesn't exist");
 		}
 		$class_lo = strtolower($class);
-		if(!key_exists($class_lo, self::$InitilizedCachers)) {
+		if(!array_key_exists($class_lo, self::$InitilizedCachers)) {
 			if(!$create) { $null = null; return $null; }
 			self::$InitilizedCachers[$class_lo] = method_exists($class,"CreateObjectCacher") ? $class::CreateObjectCacher() : new ObjectCacher($class);
 		}
@@ -138,7 +138,7 @@ class ObjectCacher {
 
 		$out = array();
 		foreach($ids as $k => $id){
-			$out[$k] = $id === null || !key_exists($id, $this->cache) ? null : $this->cache[$id];
+			$out[$k] = $id === null || !array_key_exists($id, $this->cache) ? null : $this->cache[$id];
 		}
 		return $out;
 	}
@@ -171,7 +171,7 @@ class ObjectCacher {
 	 */
 	function inCache($id) {
 		if(is_object($id)) {$id = $id->getId();};
-		return key_exists($id, $this->cache);
+		return array_key_exists($id, $this->cache);
 	}
 
 	/**
