@@ -316,10 +316,9 @@ class TableRecord extends inobj {
 	 */
 	static function GetSequenceNextval(){
 		$class_name = get_called_class();
-		$dbmole = $class_name::GetDbmole();
+		$dbmole = $class_name::GetDbmole(); // also ensures $_Recipes[$class_name] is initialized
 		if(!$dbmole->usesSequencies()){ return; } // e.g. MySQL
-		$obj = new $class_name;
-		return $dbmole->selectSequenceNextval($obj->getSequenceName());
+		return $dbmole->selectSequenceNextval(self::$_Recipes[$class_name]["sequence_name"]);
 	}
 
 	/**
@@ -563,19 +562,24 @@ class TableRecord extends inobj {
 		}else{
 			$class_name = get_called_class();
 		}
-		$obj = new $class_name();
-		return $obj->_finder($options);
+		return self::_Finder($class_name,$options);
 	}
 
 	/**
 	 * This method is used by Finder() method and does the main job.
 	 *
 	 * @access private
+	 * @param string $class_name
 	 * @param array $options
 	 * @todo describe $options
 	 * @ignore
 	 */
-	function _finder($options){
+	static function _Finder(string $class_name, array $options): TableRecord_Finder {
+		if(!isset(self::$_Recipes[$class_name])){ new $class_name(); }
+		$dbmole = self::$_DbmoleInstances[$class_name];
+		$id_field_name = self::$_Recipes[$class_name]["id_field_name"];
+		$table_name = self::$_Recipes[$class_name]["table_name"];
+
 		// order_by is converted to order
 		if(in_array("order_by",array_keys($options))){
 			$options["order"] = $options["order_by"];
@@ -583,7 +587,7 @@ class TableRecord extends inobj {
 		}
 
 		$options += array(
-			"order" => $this->getIdFieldName(),
+			"order" => $id_field_name,
 			"conditions" => array(),
 			"bind_ar" => array(),
 			"limit" => 20,
@@ -612,15 +616,14 @@ class TableRecord extends inobj {
 			}
 
 		}else{
-			$query = $this->dbmole->escapeTableName4Sql($this->getTableName());
+			$query = $dbmole->escapeTableName4Sql($table_name);
 			if(sizeof($conditions)>0){
 				$query .= " WHERE (".join(") AND (",$conditions).")";
 			}
 
 			$query_count = "SELECT COUNT(*) FROM ".$query;
 
-
-			$query = "SELECT ".$this->_escapeColumnName4Sql($this->getIdFieldName())." FROM $query";
+			$query = "SELECT ".$dbmole->escapeColumnName4Sql($id_field_name)." FROM $query";
 		}
 
 		if(strlen((string)$options["order"])>0){
@@ -635,21 +638,20 @@ class TableRecord extends inobj {
 		unset($options["use_cache"]);
 
 		$finder = new TableRecord_Finder(array(
-			"class_name" => $this->_className,
+			"class_name" => $class_name,
 			"query" => $query,
 			"query_count" => $query_count,
 			"options" => $options, // options for querying
 			"bind_ar" => $bind_ar,
 			"use_cache" => $use_cache
-		),$this->dbmole);
+		),$dbmole);
 
 		// TODO: this should be in TableRecord_Finder
 		if($use_cache){
-			Cache::Prepare($this->_className,$finder->getRecordIds());
+			Cache::Prepare($class_name,$finder->getRecordIds());
 		}
 
 		return $finder;
-
 	}
 
 	/**
@@ -692,7 +694,6 @@ class TableRecord extends inobj {
 	 *	));
 	 * ```
 	 *
-	 * @todo refactor method body as an implementation calling TableRecord::Finder()
 	 * @param array $options
 	 * @return array
 	 */
@@ -705,18 +706,23 @@ class TableRecord extends inobj {
 		}else{
 			$class_name = get_called_class();
 		}
-		$obj = new $class_name();
-		return $obj->_findAll($options);
+		return self::_FindAll($class_name,$options);
 	}
 
 	/**
 	 * Find records.
 	 *
 	 * @ignore
+	 * @param string $class_name
 	 * @param array $options
 	 * @return array
 	 */
-	function _findAll($options = array()){
+	static function _FindAll(string $class_name, array $options = []): array {
+		if(!isset(self::$_Recipes[$class_name])){ new $class_name(); }
+		$dbmole = self::$_DbmoleInstances[$class_name];
+		$id_field_name = self::$_Recipes[$class_name]["id_field_name"];
+		$table_name = self::$_Recipes[$class_name]["table_name"];
+
 		// order_by is converted to order
 		if(in_array("order_by",array_keys($options))){
 			$options["order"] = $options["order_by"];
@@ -724,7 +730,7 @@ class TableRecord extends inobj {
 		}
 
 		$options += array(
-			"order" => $this->getIdFieldName(),
+			"order" => $id_field_name,
 			"conditions" => array(),
 			"bind_ar" => array(),
 			"use_cache" => TABLERECORD_USE_CACHE_BY_DEFAULT,
@@ -738,7 +744,7 @@ class TableRecord extends inobj {
 
 		TableRecord::_NormalizeConditions($conditions,$bind_ar);
 
-		$query = "SELECT ".$this->_escapeColumnName4Sql($this->getIdFieldName())." FROM ".$this->dbmole->escapeTableName4Sql($this->getTableName());
+		$query = "SELECT ".$dbmole->escapeColumnName4Sql($id_field_name)." FROM ".$dbmole->escapeTableName4Sql($table_name);
 		if(sizeof($conditions)>0){
 			$query .= " WHERE (".join(") AND (",$conditions).")";
 		}
@@ -749,7 +755,11 @@ class TableRecord extends inobj {
 		unset($options["conditions"]);
 		unset($options["use_cache"]);
 
-		return $this->find($this->dbmole->selectIntoArray($query,$bind_ar,$options),array("use_cache" => $use_cache));
+		$ids = $dbmole->selectIntoArray($query,$bind_ar,$options);
+		if($use_cache){
+			return Cache::Get($class_name,$ids);
+		}
+		return TableRecord::_GetInstanceById($class_name,$ids,array("use_cache" => false));
 	}
 
 	/**
@@ -791,19 +801,18 @@ class TableRecord extends inobj {
 		}else{
 			$class_name = get_called_class();
 		}
-		$obj = new $class_name();
-		return $obj->_findFirst($options);
+		return self::_FindFirst($class_name,$options);
 	}
 
 	/**
 	 * internal method
 	 *
 	 * @ignore
-	 * @return TableRecord
+	 * @return TableRecord|null
 	 */
-	function _findFirst($options = array()){
+	static function _FindFirst(string $class_name, array $options = []): ?TableRecord {
 		$options["limit"] = 1;
-		$records = $this->_findAll($options);
+		$records = self::_FindAll($class_name,$options);
 
 		if(isset($records[0])){ return $records[0]; }
 		return null;
