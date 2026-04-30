@@ -598,7 +598,7 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 		if (is_null($offset)) {
 			$this->append($record);
 		} else {
-			settype($offset,"integer");
+			$offset = (int)$offset;
 			if (isset($items[$offset])) {
 				$items[$offset]->destroy();
 			}
@@ -786,7 +786,7 @@ class TableRecord_ListerItem{
 	 */
 	function getRecordId(){
 		$id = $this->_g("record_id");
-		if(is_numeric($id)){ settype($id,"integer"); }
+		if(is_numeric($id)){ $id = (int)$id; }
 		return $id;
 	}
 
