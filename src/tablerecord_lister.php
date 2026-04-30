@@ -88,18 +88,18 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 		$subject = $subjects->singularize();
 		$subject_us = $subject->underscore();
 
-		$options = array_merge(array(
+		$options = array_merge([
 			"class_name" => "$subject", // Author
 			"table_name" => "{$owner_class_us}_{$subjects_us}", // article_authors
 			"id_field_name" => "id",
 			"owner_field_name" => "{$owner_class_us}_id", // article_id
 			"subject_field_name" => "{$subject_us}_id", // author_id
 			"rank_field_name" => "rank",
-		),$options);
+		],$options);
 
-		$options = array_merge(array(
+		$options = array_merge([
 			"sequence_name" => "seq_$options[table_name]"
-		),$options);
+		],$options);
 
 		$this->_owner = &$owner;
 		$this->_dbmole = &$owner->dbmole;
@@ -144,10 +144,10 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 	 * ```
 	 */
 	function prefetchDataFor($owners,$options = []){
-		$options += array(
+		$options += [
 			"force_read" => false,
-		);
-		if(!is_array($owners)){ $owners = array($owners); }
+		];
+		if(!is_array($owners)){ $owners = [$owners]; }
 		$owners = TableRecord::ObjToId($owners);
 		$c_key = $this->_getCacheKey();
 
@@ -179,7 +179,7 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 	 * ```
 	 */
 	function flushCache(){
-		$this->prefetchDataFor($this->_owner,array("force_read" => true));
+		$this->prefetchDataFor($this->_owner,["force_read" => true]);
 	}
 
 	/**
@@ -236,7 +236,7 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 		$o = $this->_options;
 
 		if(is_null($rank)){
-			$_rank = $this->_dbmole->selectSingleValue("SELECT MAX($o[rank_field_name])+1 FROM $o[table_name] WHERE $o[owner_field_name]=:owner",array(":owner" => $this->_owner));
+			$_rank = $this->_dbmole->selectSingleValue("SELECT MAX($o[rank_field_name])+1 FROM $o[table_name] WHERE $o[owner_field_name]=:owner",[":owner" => $this->_owner]);
 			$_rank = isset($_rank) ? $_rank+1 : 0;
 		}else{
 			$_rank = $rank;
@@ -245,17 +245,17 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 
 		$o = $this->_options;
 		if(!is_null($rank)){
-			$this->_dbmole->doQuery("UPDATE $o[table_name] SET $o[rank_field_name]=$o[rank_field_name]+1 WHERE $o[owner_field_name]=:owner AND $o[rank_field_name]>=:rank",array(
+			$this->_dbmole->doQuery("UPDATE $o[table_name] SET $o[rank_field_name]=$o[rank_field_name]+1 WHERE $o[owner_field_name]=:owner AND $o[rank_field_name]>=:rank",[
 				":owner" => $this->_owner,
 				":rank" => $rank,
-			));
+			]);
 		}
-		$this->_dbmole->insertIntoTable($o["table_name"],array(
+		$this->_dbmole->insertIntoTable($o["table_name"],[
 			$o["id_field_name"] => $this->_dbmole->selectSequenceNextval($o["sequence_name"]),
 			$o["owner_field_name"] => $this->_owner,
 			$o["subject_field_name"] => $record,
 			$o["rank_field_name"] => $_rank,
-		));
+		]);
 		$this->_clearCache();
 	}
 
@@ -269,7 +269,7 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 		$this->_dbmole->doQuery("DELETE FROM $o[table_name] WHERE
 			$o[owner_field_name]=:owner AND
 			$o[subject_field_name]=:record
-		",array(":owner" => $this->_owner,":record" => $record));
+		",[":owner" => $this->_owner,":record" => $record]);
 		$this->_clearCache();
 	}
 
@@ -282,7 +282,7 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 		$o = $this->_options;
 		$this->_dbmole->doQuery("DELETE FROM $o[table_name] WHERE
 			$o[owner_field_name]=:owner
-		",array(":owner" => $this->_owner));
+		",[":owner" => $this->_owner]);
 		$this->_clearCache();
 	}
 
@@ -325,10 +325,10 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 	 * @return TableRecord_ListerItem[]
 	 */
 	function &getItems($options = []){
-		$options += array(
+		$options += [
 			"force_read" => false,
 			"preread_data" => true,
-		);
+		];
 
 		if($options["force_read"]){
 			$this->flushCache();
@@ -363,9 +363,9 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 				$o[rank_field_name] AS rank
 			FROM $o[table_name] WHERE
 				$o[owner_field_name] IN :ids_to_read ORDER BY $o[rank_field_name], $o[id_field_name]
-		",array(
+		",[
 			":ids_to_read" => $ids_to_read
-		));
+		]);
 		$rank = 0;
 		foreach($rows as $row){
 			self::$CACHE[$c_key][$row["owner_id"]][] = new TableRecord_ListerItem($this,$row,$rank);
@@ -464,7 +464,7 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 				continue;
 			}
 			if($item->getRecordId()!=$rec) {
-					$insert[] = array($rec, $item->getRank());
+					$insert[] = [$rec, $item->getRank()];
 					$item->destroy();
 			}
 			$rec = next($records);
@@ -541,16 +541,16 @@ class TableRecord_Lister implements ArrayAccess, Iterator, Countable {
 				$o[rank_field_name] AS rank
 			FROM $o[table_name] WHERE
 				$o[owner_field_name]=:owner ORDER BY $o[rank_field_name], $o[id_field_name]
-		",array(
+		",[
 			":owner" => $owner
-		));
+		]);
 		$expected_rank = 0;
 		foreach($rows as $row){
 			if($row["rank"]!=$expected_rank){
-				$this->_dbmole->doQuery("UPDATE $o[table_name] SET $o[rank_field_name]=:expected_rank WHERE $o[id_field_name]=:id",array(
+				$this->_dbmole->doQuery("UPDATE $o[table_name] SET $o[rank_field_name]=:expected_rank WHERE $o[id_field_name]=:id",[
 					":expected_rank" => $expected_rank,
 					":id" => $row["id"],
-				));
+				]);
 			}
 			$expected_rank++;
 		}
@@ -756,22 +756,22 @@ class TableRecord_ListerItem{
 
 		$this->_lister->_correctRanking();
 
-		$this->_dbmole->doQuery("UPDATE $o[table_name] SET $o[rank_field_name]=$o[rank_field_name]-1 WHERE $o[rank_field_name]>:current_rank AND $o[owner_field_name]=:owner AND $o[id_field_name]!=:id",array(
+		$this->_dbmole->doQuery("UPDATE $o[table_name] SET $o[rank_field_name]=$o[rank_field_name]-1 WHERE $o[rank_field_name]>:current_rank AND $o[owner_field_name]=:owner AND $o[id_field_name]!=:id",[
 			":current_rank" => $current_rank,
 			":owner" => $this->_owner,
 			":id" => $this,
-		));
+		]);
 
-		$this->_dbmole->doQuery("UPDATE $o[table_name] SET $o[rank_field_name]=:rank WHERE $o[id_field_name]=:id",array(
+		$this->_dbmole->doQuery("UPDATE $o[table_name] SET $o[rank_field_name]=:rank WHERE $o[id_field_name]=:id",[
 			":rank" => $rank,
 			":id" => $this,
-		));
+		]);
 
-		$this->_dbmole->doQuery("UPDATE $o[table_name] SET $o[rank_field_name]=$o[rank_field_name]+1 WHERE $o[rank_field_name]>=:rank AND $o[owner_field_name]=:owner AND $o[id_field_name]!=:id",array(
+		$this->_dbmole->doQuery("UPDATE $o[table_name] SET $o[rank_field_name]=$o[rank_field_name]+1 WHERE $o[rank_field_name]>=:rank AND $o[owner_field_name]=:owner AND $o[id_field_name]!=:id",[
 			":rank" => $rank,
 			":owner" => $this->_owner,
 			":id" => $this,
-		));
+		]);
 
 		$this->_lister->_clearCache();
 
@@ -797,10 +797,10 @@ class TableRecord_ListerItem{
 	 */
 	function setRecordId($record){
 		$o = $this->_options;
-		$this->_dbmole->doQuery("UPDATE $o[table_name] SET $o[subject_field_name]=:record WHERE $o[id_field_name]=:id",array(
+		$this->_dbmole->doQuery("UPDATE $o[table_name] SET $o[subject_field_name]=:record WHERE $o[id_field_name]=:id",[
 			":record" => $record,
 			":id" => $this,
-		));
+		]);
 	}
 
 	/**
@@ -817,9 +817,9 @@ class TableRecord_ListerItem{
 	 */
 	function destroy(){
 		$o = $this->_options;
-		$this->_dbmole->doQuery("DELETE FROM $o[table_name] WHERE $o[id_field_name]=:id",array(
+		$this->_dbmole->doQuery("DELETE FROM $o[table_name] WHERE $o[id_field_name]=:id",[
 			":id" => $this,
-		));
+		]);
 	}
 
 	function toArray(){

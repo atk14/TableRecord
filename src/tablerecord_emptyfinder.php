@@ -14,13 +14,13 @@
 class TableRecord_EmptyFinder extends TableRecord_Finder{
 	protected $_Records = [];
 	function __construct($options = []){
-		$options += array(
+		$options += [
 			"options" => []
-		);
-		$options["options"] += array(
+		];
+		$options["options"] += [
 			"offset" => null,
 			"limit" => null,
-		);
+		];
 
 		$this->_QueryOptions = $options["options"];
 	}

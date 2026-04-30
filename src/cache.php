@@ -75,7 +75,7 @@ class ObjectCacher {
 		}
 
 		$cname = $this->class;
-		$this->cache += $cname::GetInstanceById($ids_to_be_read,array("use_cache" => false));
+		$this->cache += $cname::GetInstanceById($ids_to_be_read,["use_cache" => false]);
 		$this->prepare = array_diff($this->prepare,$ids_to_be_read);
 	}
 
@@ -181,7 +181,7 @@ class ObjectCacher {
 	 */
 	static protected function _ToIds($ids, &$array_given = true){
 		if(!is_array($ids)){
-			$ids = array($ids);
+			$ids = [$ids];
 			$array_given = false;
 		} else {
 			$array_given = true;

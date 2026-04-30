@@ -307,7 +307,7 @@ class TableRecord extends inobj {
 	static function IdToObj($id,$class_name){
 		if(!isset($id)){ return null; }
 		if(is_object($id)){ return $id; }
-		return call_user_func(array($class_name,"GetInstanceById"),$id);
+		return call_user_func([$class_name,"GetInstanceById"],$id);
 	}
 
 	/**
@@ -339,7 +339,7 @@ class TableRecord extends inobj {
 	 */
 	static function GetNextId(){
 		$class_name = get_called_class();
-		return call_user_func(array($class_name,"GetSequenceNextval"));
+		return call_user_func([$class_name,"GetSequenceNextval"]);
 	}
 
 	/**
@@ -408,17 +408,17 @@ class TableRecord extends inobj {
 	 * @todo add comment
 	 */
 	function getBelongsTo($object,$options = []){
-		TableRecord::_NormalizeOptions(array($options),$options);
+		TableRecord::_NormalizeOptions([$options],$options);
 
 		$str = new String4($object);
 
 		$guessed_class_name = str_replace("_","",$object);
 		if(class_exists("inobj_$guessed_class_name")){ $guessed_class_name = "inobj_$guessed_class_name"; }
 
-		$options += array(
+		$options += [
 			"class_name" => $guessed_class_name,
 			"attribute_name" => $str->underscore()."_id",
-		);
+		];
 
 		$class_name = $options["class_name"];
 		$attribute_name = $options["attribute_name"];
@@ -427,7 +427,7 @@ class TableRecord extends inobj {
 			return null;
 		}
 
-		return call_user_func(array($class_name,"GetInstanceById"),$value);
+		return call_user_func([$class_name,"GetInstanceById"],$value);
 	}
 
 	/**
@@ -473,9 +473,9 @@ class TableRecord extends inobj {
 	 * @return TableRecord|TableRecord[] single TableRecord object or array of objects.
 	 */
 	function find($id,$options = []){
-		$options += array(
+		$options += [
 			"use_cache" => TABLERECORD_USE_CACHE_BY_DEFAULT,
-		);
+		];
 
 		if(!isset($id)){ return null; }
 
@@ -586,7 +586,7 @@ class TableRecord extends inobj {
 			unset($options["order_by"]);
 		}
 
-		$options += array(
+		$options += [
 			"order" => $id_field_name,
 			"conditions" => [],
 			"bind_ar" => [],
@@ -597,11 +597,11 @@ class TableRecord extends inobj {
 
 			"query" => null,
 			"query_count" => null,
-		);
+		];
 
 		$conditions = $options["conditions"];
 		if(is_string($conditions) && strlen($conditions)==0){ $conditions = []; }
-		if(is_string($conditions)){ $conditions = array($conditions); }
+		if(is_string($conditions)){ $conditions = [$conditions]; }
 		$bind_ar = $options["bind_ar"];
 		$use_cache = $options["use_cache"];
 
@@ -637,14 +637,14 @@ class TableRecord extends inobj {
 		unset($options["query_count"]);
 		unset($options["use_cache"]);
 
-		$finder = new TableRecord_Finder(array(
+		$finder = new TableRecord_Finder([
 			"class_name" => $class_name,
 			"query" => $query,
 			"query_count" => $query_count,
 			"options" => $options, // options for querying
 			"bind_ar" => $bind_ar,
 			"use_cache" => $use_cache
-		),$dbmole);
+		],$dbmole);
 
 		// TODO: this should be in TableRecord_Finder
 		if($use_cache){
@@ -729,16 +729,16 @@ class TableRecord extends inobj {
 			unset($options["order_by"]);
 		}
 
-		$options += array(
+		$options += [
 			"order" => $id_field_name,
 			"conditions" => [],
 			"bind_ar" => [],
 			"use_cache" => TABLERECORD_USE_CACHE_BY_DEFAULT,
-		);
+		];
 
 		$conditions = $options["conditions"];
 		if(is_string($conditions) && strlen($conditions)==0){ $conditions = []; }
-		if(is_string($conditions)){ $conditions = array($conditions); }
+		if(is_string($conditions)){ $conditions = [$conditions]; }
 		$bind_ar = $options["bind_ar"];
 		$use_cache = $options["use_cache"];
 
@@ -759,7 +759,7 @@ class TableRecord extends inobj {
 		if($use_cache){
 			return Cache::Get($class_name,$ids);
 		}
-		return TableRecord::_GetInstanceById($class_name,$ids,array("use_cache" => false));
+		return TableRecord::_GetInstanceById($class_name,$ids,["use_cache" => false]);
 	}
 
 	/**
@@ -864,10 +864,10 @@ class TableRecord extends inobj {
 			$bind_ar =  $args[1];
 			$extra_options = $args[2];
 		}else{
-			$options = array(
+			$options = [
 				"conditions" => [],
 				"bind_ar" => [],
-			);
+			];
 			$bind_ar = [];
 			$conditions = [];
 
@@ -897,14 +897,14 @@ class TableRecord extends inobj {
 		// Article::FindFirst("id",null);
 		if(is_string($options)){
 		  if(is_array($bind_ar)){
-		      $options = array(
+		      $options = [
 		        "conditions" => $options,
 		        "bind_ar" => $bind_ar
-		        );
+		        ];
 		  }else{
-		      $options = array(
-		        "conditions" => array("$options" => $bind_ar)
-		      );
+		      $options = [
+		        "conditions" => ["$options" => $bind_ar]
+		      ];
 		  }
 		}
 
@@ -912,11 +912,11 @@ class TableRecord extends inobj {
 			$options = $extra_options + $options;
 		}
 
-		foreach(array(
+		foreach([
 			"condition" => "conditions",
 			"class" => "class_name",
 			"bind" => "bind_ar",
-		) as $alt_key => $right_key){
+		] as $alt_key => $right_key){
 			if(array_key_exists($alt_key,$options)){
 				$options[$right_key] = $options[$alt_key];
 				unset($options[$alt_key]);
@@ -950,10 +950,10 @@ class TableRecord extends inobj {
 	function _FindByArray($ids,$options = []){
 		$ids = TableRecord::ObjToId($ids);
 
-		$options = array_merge(array(
+		$options = array_merge([
 			"omit_nulls" => false,
 			"use_cache" => TABLERECORD_USE_CACHE_BY_DEFAULT,
-		),$options);
+		],$options);
 
 		$MAX_ELEMENTS = TABLERECORD_MAX_NUMBER_OF_RECORDS_READ_AT_ONCE;
 		if(count($ids)>$MAX_ELEMENTS){
@@ -1097,7 +1097,7 @@ class TableRecord extends inobj {
 	 * @return array
 	 */
 	function getValues($options = []){
-	  $options += array("return_id" => true);
+	  $options += ["return_id" => true];
 		$keys = $this->getKeys();
 		$this->_readValuesIfWasNotRead($keys);
 		$out = $this->_RecordValues;
@@ -1122,7 +1122,7 @@ class TableRecord extends inobj {
 	 * @return array
 	 *
 	 */
-	function toArray(){ return $this->getValues(array("return_id" => true)); }
+	function toArray(){ return $this->getValues(["return_id" => true]); }
 
 	/**
 	 * Returns array of field names that the record contains.
@@ -1156,12 +1156,12 @@ class TableRecord extends inobj {
 		$options = ((array) $options);
 
 		if(isset($options["do_not_escape"]) && $options["do_not_escape"]==true){
-			$options["do_not_escape"] = array($field_name);
+			$options["do_not_escape"] = [$field_name];
 		}else{
 			$options["do_not_escape"] = [];
 		}
 
-		return $this->setValues(array("$field_name" => $value),$options);
+		return $this->setValues(["$field_name" => $value],$options);
 	}
 
 	/**
@@ -1205,12 +1205,12 @@ class TableRecord extends inobj {
 	function setValues($data,$options = []){
 		$data = (array) $data;
 		$options = ((array ) $options) +
-			array(
+			[
 				"do_not_escape" => [],
 				"validates_updating_of_fields" => null,
-			);
+			];
 
-		if(!is_array($options["do_not_escape"])){ $options["do_not_escape"] = array($options["do_not_escape"]); }
+		if(!is_array($options["do_not_escape"])){ $options["do_not_escape"] = [$options["do_not_escape"]]; }
 
 		foreach($data as $_key => &$value){
 			if(isset($options["validates_updating_of_fields"]) && !in_array($_key,$options["validates_updating_of_fields"])){
@@ -1280,7 +1280,7 @@ class TableRecord extends inobj {
 	 * @param mixed $value
 	 */
 	function setValueVirtually($field_name,$value){
-		$this->setValuesVirtually(array("$field_name" => $value));
+		$this->setValuesVirtually(["$field_name" => $value]);
 	}
 
 	/**
@@ -1318,7 +1318,7 @@ class TableRecord extends inobj {
 		if(is_array($fields)){
 			$fields = join(",",$fields);
 		}
-		if(!$row = $this->dbmole->selectFirstRow("SELECT $fields FROM ".$this->dbmole->escapeTableName4Sql($this->getTableName())." WHERE ".$this->_escapeColumnName4Sql($this->getIdFieldName())."=:id",array(":id" => $this->_Id))){
+		if(!$row = $this->dbmole->selectFirstRow("SELECT $fields FROM ".$this->dbmole->escapeTableName4Sql($this->getTableName())." WHERE ".$this->_escapeColumnName4Sql($this->getIdFieldName())."=:id",[":id" => $this->_Id])){
 			return null;
 		}
 		$this->_setRecordValues($row);
@@ -1335,7 +1335,7 @@ class TableRecord extends inobj {
 	function _readValuesIfWasNotRead($fields){
 		if(!isset($this->_RecordValues[$this->getIdFieldName()])){ return; } // HACK for a virtual object (for some reason we couldn't call $this->getId(), unless the method getId() is marked final)
 
-		if(!is_array($fields)){ $fields = array($fields); }
+		if(!is_array($fields)){ $fields = [$fields]; }
 
 		$fields_to_be_read = array_diff($fields,array_keys($this->_RecordValues));
 
@@ -1356,7 +1356,7 @@ class TableRecord extends inobj {
 	 */
 	function destroy():void {
 		$this->_Hook_BeforeDestroy();
-		$this->dbmole->doQuery("DELETE FROM ".$this->dbmole->escapeTableName4Sql($this->getTableName())." WHERE ".$this->_escapeColumnName4Sql($this->getIdFieldName())."=:id",array(":id" => $this->_Id));
+		$this->dbmole->doQuery("DELETE FROM ".$this->dbmole->escapeTableName4Sql($this->getTableName())." WHERE ".$this->_escapeColumnName4Sql($this->getIdFieldName())."=:id",[":id" => $this->_Id]);
 	}
 
 	/**
@@ -1369,9 +1369,9 @@ class TableRecord extends inobj {
 		$options=(array)$options;
 		$class_name = $this->_className;
 
-		$options += array(
+		$options += [
 			"use_cache" => TABLERECORD_USE_CACHE_BY_DEFAULT,
-		);
+		];
 
 		foreach($values as $_key => $value){
 			if(isset($options["validates_inserting_of_fields"]) && !in_array($_key,$options["validates_inserting_of_fields"])){
@@ -1387,7 +1387,7 @@ class TableRecord extends inobj {
 		if(isset($values[$id_field])){
 			$id = $values[$id_field];
 		}else{
-			$id = call_user_func(array($class_name,"GetNextId"));
+			$id = call_user_func([$class_name,"GetNextId"]);
 			if(!is_null($id)){
 				$values[$id_field] = $id;
 			}
@@ -1400,7 +1400,7 @@ class TableRecord extends inobj {
 		}
 		
 		Cache::Clear($this->_className,$id); // ensure that the newly created record is not stored in the Cache (obviously as null)
-		$out = TableRecord::_GetInstanceById($this->_className,$id,array("use_cache" => $options["use_cache"]));
+		$out = TableRecord::_GetInstanceById($this->_className,$id,["use_cache" => $options["use_cache"]]);
 		$out->_Hook_afterCreateNewRecord();
 		return $out;
 	}
@@ -1492,10 +1492,10 @@ class TableRecord extends inobj {
 	 * @ignore
 	 */
 	function __sleep(){
-		$this->_dbmole_wakeup_data_ = array(
+		$this->_dbmole_wakeup_data_ = [
 			"class_name" => get_class($this->dbmole),
 			"configuration" => $this->dbmole->getConfigurationName(),
-		);
+		];
 		$vars = get_object_vars($this);
 		unset($vars["dbmole"]);
 		return array_keys($vars);
@@ -1530,9 +1530,9 @@ class TableRecord extends inobj {
 		$class_name = $this->_className;
 
 		if(!isset($CACHES[$class_name])){
-			$CACHES[$class_name] = array(
+			$CACHES[$class_name] = [
 				"fields" => [],
-			);
+			];
 		}
 
 		$CACHE = &$CACHES[$class_name];
@@ -1551,7 +1551,7 @@ class TableRecord extends inobj {
 
 			// Looking for ClassName or inobj_ClassName. The prefix inobj_ (which means internal object) exists on my legacy classes.
 			if($this->hasKey("{$field}_id") && (class_exists($c = (string)$field->camelize()) || class_exists($c = "inobj_$c"))){
-				return call_user_func_array(array($c,"GetInstanceById"),array($this->getValue("{$field}_id")));
+				return call_user_func_array([$c,"GetInstanceById"],[$this->getValue("{$field}_id")]);
 			}
 		}
 
@@ -1568,8 +1568,8 @@ class TableRecord extends inobj {
 			$method = $matches[1]=="All" ? "FindAll" : "FindFirst";
 			$field = new String4($matches[2]);
 			$field = $field->underscore();
-			$params = array("$field",$arguments[0],isset($arguments[1]) ? $arguments[1] : []);
-			return call_user_func_array(array($class_name,$method),$params);
+			$params = ["$field",$arguments[0],isset($arguments[1]) ? $arguments[1] : []];
+			return call_user_func_array([$class_name,$method],$params);
 		}
 
 		throw new Exception("TableRecord::__callStatic(): unknown static method $class_name::$name()");
@@ -1613,11 +1613,11 @@ class TableRecord extends inobj {
 		$cache_key = $this->dbmole->getDatabaseType().".".$this->dbmole->getConfigurationName().".".$this->getTableName(); // e.g. "postgresql.default.articles"
 
 		if(!isset(self::$_TableStructuresCache[$cache_key])){
-			$structure = $this->_readTableStructure(array("cache" => self::$TableStructuresCacheDuration));
+			$structure = $this->_readTableStructure(["cache" => self::$TableStructuresCacheDuration]);
 
 			if(!$structure && self::$TableStructuresCacheDuration){
 				// This fix covers situation when a table is created after a cache for its structure was saved
-				$structure = $this->_readTableStructure(array("recache" => true));
+				$structure = $this->_readTableStructure(["recache" => true]);
 			}
 
 			if(!$structure){
