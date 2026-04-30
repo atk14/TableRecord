@@ -17,8 +17,8 @@
 		"autoload": {
 			"classmap": ["src"],
 			"files": [
-				"src/tablerecord_databaseccessor_postgresql.php",
-				"src/tablerecord_databaseccessor_mysql.php"
+				"src/tablerecord_databaseaccessor_postgresql.php",
+				"src/tablerecord_databaseaccessor_mysql.php"
 			]
 		},
 		"autoload-dev": {
