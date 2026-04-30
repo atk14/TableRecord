@@ -3,6 +3,10 @@ Change Log
 
 All notable changes to TableRecord will be documented in this file.
 
+## [1.3.2] - 2026-04-30
+
+* e610a74 - Unused attribute removed + Fix
+
 ## [1.3.1] - 2026-04-30
 
 * 242115e - Unserialization fixed
