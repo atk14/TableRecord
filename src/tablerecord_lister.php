@@ -745,7 +745,7 @@ class TableRecord_ListerItem{
 	 * @param integer $rank
 	 */
 	function setRank($rank){
-		$rank = (integer)$rank;
+		$rank = (int)$rank;
 		$o = $this->_options;
 
 		if($rank==$this->getRank()){ return; }
