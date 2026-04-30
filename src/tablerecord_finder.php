@@ -95,7 +95,7 @@ class TableRecord_Finder implements ArrayAccess, Iterator, Countable {
 			if($this->_UseCache){
 				$this->_Records = Cache::Get($this->_ClassName,$this->getRecordIds());
 			}else{
-				$this->_Records = call_user_func_array([$this->_ClassName,"GetInstanceById"],[$this->getRecordIds()]);
+				$this->_Records = $this->_ClassName::GetInstanceById($this->getRecordIds());
 			}
 		}
 		return $this->_Records;

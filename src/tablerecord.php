@@ -1567,7 +1567,7 @@ class TableRecord extends inobj {
 			$field = new String4($matches[2]);
 			$field = $field->underscore();
 			$params = ["$field",$arguments[0],isset($arguments[1]) ? $arguments[1] : []];
-			return call_user_func_array([$class_name,$method],$params);
+			return $class_name::$method(...$params);
 		}
 
 		throw new Exception("TableRecord::__callStatic(): unknown static method $class_name::$name()");
