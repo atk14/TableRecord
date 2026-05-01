@@ -482,7 +482,7 @@ class TableRecord extends inobj {
 			return Cache::Get($this->_className,$id);
 		}
 
-		settype($id,$this->_getIdFieldType());
+		$this->_settype($id,$this->_getIdFieldType());
 		$this->_Id = $id;
 		if(!$this->_readValues()){
 			return null;
@@ -1721,5 +1721,21 @@ class TableRecord extends inobj {
 	 */
 	static function CreateObjectCacher(){
 		return new ObjectCacher(get_called_class());
+	}
+
+	protected function _settype(&$var,$type){
+		if(is_null($var)){ return; }
+		$type = (string)$type;
+		switch((string)$type){
+			case "integer":
+				$var = (integer)$var;
+				return;
+			case "float":
+				$var = (float)$var;
+				return;
+			case "string":
+				$var = (string)$var;
+				return;
+		}
 	}
 }
