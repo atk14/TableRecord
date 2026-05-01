@@ -914,16 +914,6 @@ class TableRecord extends inobj {
 				unset($options[$alt_key]);
 			}
 		}
-
-		// check that bind_ar contains all keys starting with a colon (:key1, :key2...)
-		// TODO: move this somewhere into dbmole?
-		if(isset($options["bind_ar"])){
-			foreach($options["bind_ar"] as $key => $value){
-				if(!is_string($key) || strlen($key)<1 || $key[0]!=":"){
-					throw new Exception("Insecure bind value: $key");
-				}
-			}
-		}
 	}
 
 	/**
