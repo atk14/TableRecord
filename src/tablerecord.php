@@ -1543,7 +1543,7 @@ class TableRecord extends inobj {
 	 * @ignore
 	 */
 	static function __callStatic($name,$arguments){
-		$class_name = function_exists("get_called_class") ? get_called_class() : "unknown";
+		$class_name = get_called_class();
 
 		if(preg_match('/^Find(|First|All)By(.+)/',$name,$matches)){
 			$method = $matches[1]=="All" ? "FindAll" : "FindFirst";
