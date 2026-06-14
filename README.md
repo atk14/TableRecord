@@ -1,6 +1,8 @@
 TableRecord
 ===========
 
+[![Tests](https://github.com/atk14/TableRecord/actions/workflows/tests.yml/badge.svg)](https://github.com/atk14/TableRecord/actions/workflows/tests.yml)
+
 TableRecord provides basic functionality with table records.
 
 Installation
