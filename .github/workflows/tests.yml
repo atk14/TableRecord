@@ -1,0 +1,83 @@
+name: Tests
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php:
+          - "7.1"
+          - "7.2"
+          - "7.3"
+          - "7.4"
+          - "8.0"
+          - "8.1"
+          - "8.2"
+          - "8.3"
+          - "8.4"
+          - "8.5"
+
+    name: "PHP ${{ matrix.php }}"
+
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: composer
+
+      - name: Setup PostgreSQL
+        run: |
+          psql -h 127.0.0.1 -U postgres -c "CREATE USER test WITH PASSWORD 'test';"
+          psql -h 127.0.0.1 -U postgres -c "CREATE DATABASE test OWNER test;"
+        env:
+          PGPASSWORD: postgres
+
+      - name: Setup MySQL
+        run: |
+          mysql -h 127.0.0.1 -u root -proot -e "CREATE DATABASE test;"
+          mysql -h 127.0.0.1 -u root -proot -e "CREATE USER 'test'@'%' IDENTIFIED BY 'test';"
+          mysql -h 127.0.0.1 -u root -proot -e "GRANT ALL PRIVILEGES ON test.* TO 'test'@'%';"
+          mysql -h 127.0.0.1 -u root -proot -e "FLUSH PRIVILEGES;"
+
+      - name: Install dependencies
+        run: composer update
+
+      - name: Run tests
+        run: cd test && ../vendor/bin/run_unit_tests
+
+# vim:ts=2:sw=2:et
